@@ -897,10 +897,15 @@ body {
   color: #a0a0af;
   font-family: "Space Grotesk";
 }
-.studio-footer > a:last-child {
+.footer-links {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 24px;
+}
+.footer-links a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   min-height: 44px;
   font-size: 11px;
 }
@@ -1311,7 +1316,7 @@ body {
     border-top: 1px solid #303038;
     padding-top: 20px;
   }
-  .studio-footer > a:last-child {
+  .footer-links {
     margin-left: auto;
   }
   .sculpture-fallback span {

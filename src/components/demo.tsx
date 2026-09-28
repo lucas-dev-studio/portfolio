@@ -578,9 +578,14 @@ export default function TimelineDemo() {
             <br />
             IDEIAS AMBICIOSAS SÃO BEM-VINDAS.
           </p>
-          <a href="#inicio">
-            Voltar ao topo <ArrowUp size={15} aria-hidden="true" />
-          </a>
+          <div className="footer-links">
+            <a href="https://github.com/lucas-dev-studio">
+              <Code2 size={15} aria-hidden="true" /> GitHub
+            </a>
+            <a href="#inicio">
+              Voltar ao topo <ArrowUp size={15} aria-hidden="true" />
+            </a>
+          </div>
         </footer>
       </div>
     </MotionConfig>
