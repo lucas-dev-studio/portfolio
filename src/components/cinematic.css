@@ -1,0 +1,465 @@
+/* A single palette, shared across every scene. */
+:root {
+  --background: #0c0d10;
+  --foreground: #f1efe8;
+  --primary: #3455ff;
+  --primary-foreground: #fff;
+  --muted-foreground: #acaeb9;
+  --border: #303139;
+}
+::selection {
+  background: #3455ff;
+  color: #fff;
+}
+.studio-shell {
+  background: #0c0d10;
+}
+.studio-cta {
+  background: #3455ff;
+  color: #fff !important;
+}
+.studio-cta:hover {
+  background: #2340db;
+}
+.hero-statement h1 span {
+  color: #8193ff;
+}
+.studio-label > span,
+.studio-logo svg,
+.service-number,
+.service-subtitle,
+.studio-text-link svg {
+  color: #91a1ff;
+}
+.stage-ambient {
+  background: radial-gradient(ellipse, #2447ff24, transparent 65%);
+}
+.tag-right {
+  background: #11172d;
+  border-color: #718bff40;
+}
+.tag-icon {
+  background: #10121c;
+  border-color: #8299ff40;
+}
+.stage-tag,
+.stage-tag strong {
+  color: #eeedf5;
+}
+.tag-right svg,
+.stage-cross {
+  color: #9eafff;
+}
+.tag-dot {
+  background: #8096ff;
+}
+.studio-ribbon {
+  background: #e9e7df;
+  color: #121318;
+  transform: rotate(0);
+  margin: 0;
+  width: 100%;
+  padding: 34px 0;
+  border-block: 1px solid #333;
+}
+.service-art {
+  background: #11162b !important;
+  color: #9aaaff !important;
+}
+.service-art-ring {
+  border-color: #6c84ff !important;
+}
+.service-art svg {
+  color: #9baaff !important;
+}
+.service-contact {
+  color: #b5c0ff;
+}
+.idea-story {
+  background: #171ddb;
+  color: #fff;
+}
+.idea-sticky .studio-label {
+  color: #d0d4ff;
+}
+.idea-sticky h2 em {
+  color: #fff;
+}
+.idea-particle {
+  background: #f1efe8;
+}
+.idea-particle:nth-of-type(3n) {
+  background: #97a6ff;
+}
+.idea-particle:nth-of-type(5n) {
+  background: #080b62;
+}
+.idea-core {
+  color: #fff;
+}
+.idea-orbit {
+  border-color: #ffffff30;
+}
+.idea-track {
+  background: #ffffff35;
+}
+.idea-track-fill {
+  background: #fff;
+}
+.work-chapters {
+  padding: 0;
+  gap: 0;
+}
+.work-chapter,
+.work-educacional {
+  --chapter-accent: #a9b8ff;
+  --chapter-text: #f1efe8;
+  --chapter-muted: #b9bdcc;
+  --chapter-bg: #10121b;
+  border-radius: 0;
+}
+.work-sandbox {
+  background: radial-gradient(
+    ellipse at 75% 55%,
+    #1c2850,
+    #10131e 60%,
+    #10121b
+  );
+}
+.work-educacional {
+  background: #e9e7df;
+  --chapter-accent: #263bc5;
+  --chapter-text: #15161b;
+  --chapter-muted: #4c4f60;
+  --chapter-bg: #e9e7df;
+}
+.work-explore,
+.work-floating-note {
+  color: #0b1030;
+}
+.work-educacional .work-explore,
+.work-educacional .work-floating-note {
+  color: #fff;
+}
+.work-backdrop {
+  opacity: 0.09;
+}
+.work-halo {
+  background: radial-gradient(ellipse, #7387ff26, transparent 65%);
+}
+.work-heading {
+  padding-block: 90px;
+}
+.about-art {
+  background: #15182a;
+  border-color: #465078;
+}
+.about-art::before,
+.about-art::after {
+  border-color: #5e72c5;
+}
+.about-code {
+  color: #a8b7ff;
+}
+.studio-about-copy h2 span,
+.studio-process h2 span {
+  color: #a8b7ff;
+}
+.studio-contact {
+  background: #263fe7;
+  color: #fff;
+}
+.studio-contact .studio-label,
+.studio-contact h2 span {
+  color: #fff;
+  -webkit-text-stroke: 0;
+}
+.contact-bottom {
+  border-color: #ffffff50;
+}
+.contact-orbit,
+.contact-orbit::before,
+.contact-orbit::after {
+  border-color: #ffffff35;
+}
+.studio-contact .studio-cta {
+  background: #f1efe8;
+  color: #15161b !important;
+}
+.studio-contact .studio-cta:hover {
+  background: #fff;
+}
+.studio-contact a:focus-visible {
+  outline-color: #fff;
+}
+.hero-second-scene,
+.hero-scene-index {
+  display: none;
+}
+@media (min-width: 900px) and (min-height: 650px) and (prefers-reduced-motion: no-preference) {
+  .hero-sequence {
+    height: 210svh;
+    position: relative;
+  }
+  .hero-sequence .studio-hero {
+    height: 100svh;
+    position: sticky;
+    top: 0;
+    padding-top: 24px;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero-statement {
+    margin-top: 32px;
+  }
+  .hero-statement h1 {
+    font-family: "Space Grotesk";
+    font-size: clamp(64px, 7vw, 115px);
+    font-weight: 700;
+    letter-spacing: -0.07em;
+    line-height: 1.03;
+  }
+  .hero-statement > p {
+    font-size: 12px;
+    max-width: 180px;
+  }
+  .digital-stage {
+    height: clamp(280px, 42vh, 500px);
+    margin-top: -20px;
+  }
+  .hero-conversion {
+    position: absolute;
+    bottom: 65px;
+    left: 5%;
+    right: 5%;
+    z-index: 7;
+  }
+  .hero-scroll-label {
+    position: absolute;
+    bottom: 20px;
+    left: 5%;
+    right: 5%;
+  }
+  .hero-second-scene {
+    display: flex;
+    position: absolute;
+    inset: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 5;
+    pointer-events: none;
+    clip-path: inset(100% 0 0 0);
+  }
+  .hero-second-scene > span {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    margin-bottom: 30px;
+    color: #c9ceea;
+  }
+  .hero-second-scene p {
+    font-family: "Space Grotesk";
+    font-weight: 700;
+    font-size: clamp(60px, 8.6vw, 145px);
+    line-height: 1;
+    letter-spacing: -0.07em;
+  }
+  .hero-second-scene em {
+    font-style: normal;
+    color: #a8b7ff;
+  }
+  .hero-second-scene small {
+    font-size: 14px;
+    margin-top: 30px;
+    color: #e6e7ef;
+  }
+  .hero-scene-index {
+    display: block;
+    position: absolute;
+    bottom: 22px;
+    left: 5%;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: #c9ceea;
+  }
+  .work-scene {
+    height: 150svh;
+    position: relative;
+  }
+  .work-chapter {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 650px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: 25px;
+  }
+  .work-composition {
+    flex: 1;
+    align-items: center;
+    min-height: 0;
+  }
+  .work-stage {
+    min-height: 0;
+  }
+  .work-story h3 {
+    font-size: clamp(52px, 5.2vw, 85px);
+  }
+  .work-story > p {
+    font-size: 13px;
+  }
+  .work-device {
+    max-height: 58vh;
+  }
+  .work-device .sandbox-preview {
+    max-height: 55vh;
+    object-fit: contain;
+  }
+  .work-bottom {
+    flex-shrink: 0;
+  }
+  .studio-contact {
+    min-height: 95svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+@media (max-width: 760px) {
+  .hero-statement h1 {
+    font-family: "Space Grotesk";
+    font-size: clamp(39px, 10.2vw, 72px);
+    font-weight: 700;
+    letter-spacing: -0.07em;
+    line-height: 1.06;
+  }
+  .work-heading {
+    padding-block: 60px;
+  }
+  .studio-ribbon {
+    font-size: 38px;
+  }
+  .studio-contact {
+    padding-block: 75px;
+  }
+}
+
+.work-stage {
+  perspective: 1200px;
+}
+.motion-toggle {
+  color: #b8c3ff;
+}
+.hero-sequence .studio-cta:focus-visible {
+  outline-color: #fff;
+}
+.service-item.is-open .service-trigger,
+.case-features > div > span {
+  color: #a8b7ff;
+}
+
+.sculpture-panel {
+  position: relative;
+  height: 400px;
+  isolation: isolate;
+  min-width: 0;
+}
+.sculpture-panel > .sculpture-canvas {
+  height: 100%;
+  width: 100%;
+}
+.sculpture-panel-caption {
+  position: absolute;
+  bottom: 12px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: "Space Grotesk";
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: #c4caff;
+  z-index: 3;
+}
+.sculpture-panel-caption button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #ffffff50;
+  border-radius: 50%;
+  background: #10121be6;
+  color: #fff;
+  cursor: pointer;
+}
+.sculpture-panel-caption button:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+.service-sculpture {
+  grid-column: 1;
+  grid-row: 2;
+  height: 340px;
+  margin-top: -40px;
+}
+.studio-services .services-intro {
+  grid-column: 1;
+  grid-row: 1;
+}
+.studio-services .service-list {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+.studio-services {
+  row-gap: 0;
+}
+.about-sculpture {
+  height: 450px;
+  width: 100%;
+}
+.about-art:before,
+.about-art:after {
+  display: none;
+}
+.about-art-corner {
+  color: #c4caff;
+  z-index: 2;
+}
+.about-art-bottom {
+  display: none;
+}
+.studio-contact > .contact-sculpture {
+  position: relative;
+  width: min(700px, 100%);
+  height: 400px;
+  align-self: center;
+  margin: -30px auto 10px;
+}
+.contact-sculpture .sculpture-panel-caption {
+  color: #fff;
+}
+@media (max-width: 760px) {
+  .studio-services .services-intro,
+  .studio-services .service-list,
+  .service-sculpture {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .service-sculpture {
+    margin: 0;
+    height: 300px;
+  }
+  .about-sculpture {
+    height: 380px;
+  }
+  .studio-contact > .contact-sculpture {
+    height: 300px;
+    margin: 0 auto 20px;
+  }
+}
+/* Anchor destinations stay exact while scroll scenes refresh. */ html{scroll-behavior:auto}
