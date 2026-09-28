@@ -225,7 +225,7 @@ function Hero() {
           </div>
         </div>
         <div className="hero-scroll-label">
-          <span>LUCA / DESENVOLVIMENTO & IA</span>
+          <span>LUCAS / DESENVOLVIMENTO & IA</span>
           <span>
             ROLE PARA DESCOBRIR <ArrowDown size={12} />
           </span>
@@ -435,7 +435,7 @@ export default function TimelineDemo() {
                 className="about-sculpture"
               />
               <span className="about-art-bottom">
-                <span>LUCA</span>
+                <span>LUCAS</span>
                 <span>SOFTWARE + IA</span>
               </span>
             </Reveal>
