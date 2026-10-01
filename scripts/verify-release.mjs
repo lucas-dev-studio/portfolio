@@ -14,7 +14,7 @@ async function files(dir) {
   }
   return result;
 }
-const allowed = /^(?:index\.html|404\.html|_headers|favicon\.svg|robots\.txt|sitemap\.xml|social-preview\.png|images\/sandbox\.png|assets\/[a-zA-Z0-9_-]+\.(?:js|css|woff2?))$/;
+const allowed = /^(?:index\.html|404\.html|_headers|favicon\.svg|robots\.txt|sitemap\.xml|social-preview\.png|images\/sandbox\.png|assets\/[a-zA-Z0-9_.-]+\.(?:js|css|woff2?))$/;
 const secretPatterns = [
   /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
   /\bAKIA[0-9A-Z]{16}\b/,

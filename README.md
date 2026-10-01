@@ -6,6 +6,10 @@ Portfólio de **Lucas**, desenvolvedor de sites, automações e experiências di
 
 ![Página inicial do portfólio Lucas Dev Studio](docs/preview.png)
 
+![Cena 3D dos serviços](docs/scene-services.png)
+
+![Cena 3D de contato](docs/scene-contact.png)
+
 ## Trabalho em destaque
 
 | Projeto | O que resolve | Tecnologias |
@@ -25,7 +29,7 @@ Me conte sua ideia pelo [WhatsApp](https://wa.me/5511965117938?text=Ol%C3%A1%2C%
 
 ## Este site
 
-Feito com React, TypeScript, Tailwind CSS, Framer Motion e Three.js. A escultura 3D é própria; o movimento pode ser pausado e respeita a preferência por movimento reduzido. O deploy público usa Cloudflare Pages.
+Feito com React, TypeScript, Tailwind CSS, Framer Motion e Three.js. O portfólio usa cenas 3D distintas no início, nos serviços, na apresentação pessoal e no contato. O movimento respeita a preferência por movimento reduzido; a animação principal também pode ser pausada. O deploy público usa Cloudflare Pages.
 
 ```bash
 npm ci
@@ -46,7 +50,7 @@ Node.js 22.12+ é recomendado. Os testes de navegador usam Playwright e podem ex
 ## Organização
 
 - `src/components/new-site.tsx` e `new-site.css`: página comercial, interações e apresentação dos projetos.
-- `src/components/digital-sculpture.tsx` e `sculpture-geometry.ts`: escultura 3D.
+- `src/components/digital-sculpture.tsx`, `kinetic-world.tsx` e `sculpture-geometry.ts`: cenas 3D.
 - `src/data/projects.ts`: conteúdo dos dois projetos.
 - `src/data/contact.ts`: links de contato.
 - `public/_headers`: cabeçalhos de segurança no Cloudflare Pages.

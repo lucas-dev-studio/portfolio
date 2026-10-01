@@ -61,8 +61,8 @@ test('3D, services and contact work under CSP without violations', async ({ page
   await expect(page.locator('.ns-hero-object .sculpture-canvas')).toHaveAttribute('data-ready','true');
   await page.getByRole('button', {name:'Pausar animação 3D', exact:true}).click();
   await expect(page.getByRole('button', {name:'Reproduzir animação 3D',exact:true})).toBeVisible();
-  await page.getByRole('button',{name:/02 Menos repetição/}).click();
-  await expect(page.locator('.ns-cap-automation')).toBeVisible();
+  await page.getByRole('button',{name:/02 Automação em movimento/}).click();
+  await expect(page.locator('.ns-world-automation')).toHaveAttribute('data-ready','true');
   const links = await page.locator('a[target="_blank"]').evaluateAll(links => links.map(el => ({href:(el as HTMLAnchorElement).href,rel:el.getAttribute('rel')})));
   expect(links.length).toBeGreaterThan(3);
   for (const link of links) {

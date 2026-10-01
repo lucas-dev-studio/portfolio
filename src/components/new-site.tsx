@@ -9,16 +9,13 @@ import {
 } from "framer-motion";
 import {
   ArrowDown,
-  ArrowRight,
   ArrowUpRight,
   Asterisk,
   BrainCircuit,
-  Braces,
   Check,
   Code2,
   ExternalLink,
   Menu,
-  MousePointer2,
   Pause,
   Play,
   Sparkles,
@@ -31,6 +28,7 @@ import { whatsappLabel, whatsappUrl } from "@/data/contact";
 import "./new-site.css";
 
 const Sculpture = lazy(() => import("./digital-sculpture"));
+const KineticWorld = lazy(() => import("./kinetic-world"));
 
 const easing = [0.22, 1, 0.36, 1] as const;
 
@@ -39,8 +37,8 @@ const capabilities = [
     number: "01",
     icon: Code2,
     label: "DESIGN & DESENVOLVIMENTO",
-    title: "Sites que não passam despercebidos.",
-    body: "Uma presença digital com identidade, clareza e movimento. Do primeiro impacto ao clique que inicia uma conversa.",
+    title: "Sites em outra dimensão.",
+    body: "Presença digital para ser lembrada.",
     tags: ["Sites institucionais", "Landing pages", "Experiências interativas"],
     visual: "sites",
     contact: "um site ou landing page",
@@ -49,8 +47,8 @@ const capabilities = [
     number: "02",
     icon: Workflow,
     label: "PYTHON & INTEGRAÇÕES",
-    title: "Menos repetição. Mais espaço para criar.",
-    body: "Ferramentas sob medida para conectar etapas, organizar dados e tirar trabalho manual do caminho.",
+    title: "Automação em movimento.",
+    body: "O trabalho repetitivo sai de cena.",
     tags: ["Automações", "Integrações", "Fluxos internos"],
     visual: "automation",
     contact: "uma automação em Python",
@@ -59,8 +57,8 @@ const capabilities = [
     number: "03",
     icon: BrainCircuit,
     label: "INTELIGÊNCIA ARTIFICIAL",
-    title: "IA onde ela realmente faz diferença.",
-    body: "Recursos inteligentes aplicados ao seu produto ou processo, com uma experiência que continua simples para quem usa.",
+    title: "Inteligência que age.",
+    body: "IA aplicada a um problema real.",
     tags: ["Assistentes", "Recursos com IA", "Produtos digitais"],
     visual: "ai",
     contact: "uma solução com inteligência artificial",
@@ -197,27 +195,17 @@ function Manifesto() {
         <Reveal className="ns-section-marker"><span>01 / PONTO DE PARTIDA</span><i /></Reveal>
         <Reveal className="ns-manifesto-content">
           <h2>UMA IDEIA.<br /><em>UM MUNDO NOVO.</em></h2>
-          <div className="ns-manifesto-bottom"><p>Design, código e movimento para fazer acontecer.</p><a href="#projetos" aria-label="Ver projetos"><ArrowDown size={27} /></a></div>
+          <div className="ns-manifesto-bottom"><p>Da ideia à experiência.</p><a href="#projetos" aria-label="Ver projetos"><ArrowDown size={27} /></a></div>
         </Reveal>
+        <div className="ns-manifesto-kinetic" aria-hidden="true"><span /><span /><span /><span /></div>
       </div>
     </section>
   );
 }
 
-function CapabilityVisual({ visual }: { visual: string }) {
-  return (
-    <AnimatePresence mode="wait">
-      <motion.div key={visual} className={`ns-cap-visual ns-cap-${visual}`} initial={{ opacity: 0, y: 28, rotateY: -14 }} animate={{ opacity: 1, y: 0, rotateY: -8 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.55, ease: easing }}>
-        {visual === "sites" && <><div className="ns-ui-browser"><div className="ns-ui-top"><span /><span /><span /><small>seu-proximo-projeto.com</small></div><div className="ns-ui-body"><b>VOCÊ IMAGINA.<br /><i>A GENTE CRIA.</i></b><span>CONHEÇA A EXPERIÊNCIA <ArrowUpRight size={12} /></span><div className="ns-ui-orb" /></div></div><div className="ns-ui-float"><MousePointer2 size={20} /> EXPERIÊNCIA QUE CONVERTE</div></>}
-        {visual === "automation" && <><div className="ns-flow-card ns-flow-one"><Braces size={27} /><span>ENTRADA DE DADOS</span><b>Organizar.</b></div><div className="ns-flow-line" /><div className="ns-flow-card ns-flow-two"><Workflow size={27} /><span>PROCESSO AUTOMÁTICO</span><b>Conectar.</b></div><div className="ns-flow-card ns-flow-three"><Check size={27} /><span>TEMPO DEVOLVIDO</span><b>Avançar.</b></div></>}
-        {visual === "ai" && <><div className="ns-ai-aura" /><div className="ns-ai-core"><Sparkles size={39} strokeWidth={1.25} /><span>INTELIGÊNCIA APLICADA</span></div><div className="ns-ai-message ns-ai-message-one">Qual problema podemos resolver?</div><div className="ns-ai-message ns-ai-message-two">Vamos encontrar um caminho. <ArrowRight size={16} /></div></>}
-      </motion.div>
-    </AnimatePresence>
-  );
-}
-
 function Services() {
   const [active, setActive] = useState(0);
+  const reduced = useReducedMotion();
   return (
     <section id="servicos" className="ns-services">
       <div className="ns-wrap">
@@ -234,7 +222,7 @@ function Services() {
               </div>;
             })}
           </div>
-          <div className="ns-service-stage"><span className="ns-stage-label">{capabilities[active].label} / {capabilities[active].number}</span><CapabilityVisual visual={capabilities[active].visual} /><span className="ns-stage-index">LUCAS STUDIO — EM CONSTRUÇÃO CONTÍNUA</span></div>
+          <div className="ns-service-stage"><span className="ns-stage-label">{capabilities[active].label} / {capabilities[active].number}</span><Suspense fallback={null}><KineticWorld variant={capabilities[active].visual} paused={Boolean(reduced)} /></Suspense><span className="ns-stage-index">ARRASTE O OLHAR. IMAGINE O SEU.</span></div>
         </div>
       </div>
     </section>
@@ -259,19 +247,21 @@ function Projects() {
 }
 
 function About() {
-  return <section id="sobre" className="ns-about"><div className="ns-wrap ns-about-grid"><div className="ns-about-visual" aria-hidden="true"><span>L</span><div className="ns-about-orbit ns-about-orbit-one" /><div className="ns-about-orbit ns-about-orbit-two" /><i>IDEIA<br />→<br />IMPACTO</i></div><Reveal className="ns-about-copy"><p className="ns-section-label">04 / QUEM ESTÁ POR TRÁS</p><h2>OI, EU SOU<br /><em>LUCAS.</em></h2><p>Transformo ideias em sites, automações e experiências com IA. Você fala direto com quem cria.</p><div className="ns-about-facts"><span><Check size={17} /> CONVERSA DIRETA</span><span><Check size={17} /> SOLUÇÃO SOB MEDIDA</span><span><Check size={17} /> DO CONCEITO À ENTREGA</span></div><a href="https://github.com/lucas-dev-studio" target="_blank" rel="noopener noreferrer" className="ns-inline-link">Meu GitHub <ArrowUpRight size={17} /></a></Reveal></div></section>;
+  const reduced = useReducedMotion();
+  return <section id="sobre" className="ns-about"><div className="ns-wrap ns-about-grid"><div className="ns-about-visual" aria-label="Monograma L tridimensional em movimento"><Suspense fallback={<span>L</span>}><KineticWorld variant="monolith" paused={Boolean(reduced)} /></Suspense><i>IDEIA<br />→<br />IMPACTO</i></div><Reveal className="ns-about-copy"><p className="ns-section-label">04 / QUEM ESTÁ POR TRÁS</p><h2>OI, EU SOU<br /><em>LUCAS.</em></h2><p>Crio sites, automações e experiências com IA. Você fala direto comigo.</p><div className="ns-about-facts"><span><Check size={17} /> CONVERSA DIRETA</span><span><Check size={17} /> SOLUÇÃO SOB MEDIDA</span><span><Check size={17} /> DO CONCEITO À ENTREGA</span></div><a href="https://github.com/lucas-dev-studio" target="_blank" rel="noopener noreferrer" className="ns-inline-link">Meu GitHub <ArrowUpRight size={17} /></a></Reveal></div></section>;
 }
 
 function Process() {
-  return <section className="ns-process"><div className="ns-wrap"><Reveal className="ns-process-header"><p className="ns-section-label">05 / COMO ACONTECE</p><h2>SIMPLES DE COMEÇAR.<br /><span>ESPECIAL NO RESULTADO.</span></h2></Reveal><div className="ns-process-grid">{[
-    ["01", "A gente conversa.", "Você me conta a ideia, o problema e o objetivo. Definimos escopo, prazo e orçamento com clareza."],
-    ["02", "A ideia ganha forma.", "Eu desenho, desenvolvo e compartilho a evolução para alinharmos os detalhes no caminho."],
-    ["03", "Colocamos no mundo.", "Testamos a experiência, preparamos a entrega e você recebe orientações para seguir em frente."],
-  ].map(([num, title, copy], index) => <Reveal className="ns-process-step" delay={index * 0.12} key={num}><span className="ns-process-num">{num}</span><div className="ns-process-line" /><h3>{title}</h3><p>{copy}</p></Reveal>)}</div></div></section>;
+  return <section className="ns-process"><div className="ns-wrap"><Reveal className="ns-process-header"><p className="ns-section-label">05 / COMO ACONTECE</p><h2>DA IDEIA<br /><span>AO IMPACTO.</span></h2></Reveal><div className="ns-process-grid">{[
+    ["01", "Conversar."],
+    ["02", "Criar."],
+    ["03", "Lançar."],
+  ].map(([num, title], index) => <Reveal className="ns-process-step" delay={index * 0.12} key={num}><span className="ns-process-num">{num}</span><div className="ns-process-line" /><h3>{title}</h3><span className="ns-process-orb" aria-hidden="true" /></Reveal>)}</div></div></section>;
 }
 
 function Contact() {
-  return <section id="contato" className="ns-contact"><div className="ns-wrap"><Reveal className="ns-contact-inner"><div className="ns-contact-top"><span><i className="ns-live-dot" /> AGENDA ABERTA PARA NOVAS IDEIAS</span><span>LUCAS / 2026</span></div><h2>TEM UMA IDEIA?<br /><span>BORA FAZER</span><br />ACONTECER<span className="ns-contact-dot">.</span></h2><div className="ns-contact-bottom"><p>O próximo projeto pode começar com uma conversa. Me conte o que você quer criar.</p><ArrowLink href={whatsappUrl()} light>Falar com Lucas no WhatsApp</ArrowLink></div><div className="ns-contact-mark" aria-hidden="true"><Play size={30} fill="currentColor" /></div></Reveal></div></section>;
+  const reduced = useReducedMotion();
+  return <section id="contato" className="ns-contact"><div className="ns-wrap"><Reveal className="ns-contact-inner"><div className="ns-contact-top"><span><i className="ns-live-dot" /> AGENDA ABERTA PARA NOVAS IDEIAS</span><span>LUCAS / 2026</span></div><div className="ns-contact-world"><Suspense fallback={null}><KineticWorld variant="burst" paused={Boolean(reduced)} /></Suspense></div><h2>AGORA É<br /><span>A SUA VEZ</span><span className="ns-contact-dot">.</span></h2><div className="ns-contact-bottom"><p>Uma conversa. O próximo projeto.</p><ArrowLink href={whatsappUrl()} light>Falar com Lucas no WhatsApp</ArrowLink></div></Reveal></div></section>;
 }
 
 export default function NewSite() {

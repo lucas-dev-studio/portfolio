@@ -21,15 +21,16 @@ test("desktop presents two real cases and a clear contact path", async ({ page }
 
 test("service controls switch both content and visual", async ({ page }) => {
   await page.goto("/");
-  const automation = page.getByRole("button", { name: /02 Menos repetição/ });
+  await expect(page.locator(".ns-service-stage .ns-world-sites")).toHaveAttribute("data-ready", "true");
+  const automation = page.getByRole("button", { name: /02 Automação em movimento/ });
   await automation.click();
   await expect(automation).toHaveAttribute("aria-expanded", "true");
-  await expect(page.getByText("Ferramentas sob medida para conectar etapas", { exact: false })).toBeVisible();
-  await expect(page.locator(".ns-cap-automation")).toBeVisible();
-  const ai = page.getByRole("button", { name: /03 IA onde ela realmente/ });
+  await expect(page.getByText("O trabalho repetitivo sai de cena.", { exact: true })).toBeVisible();
+  await expect(page.locator(".ns-service-stage .ns-world-automation")).toHaveAttribute("data-ready", "true");
+  const ai = page.getByRole("button", { name: /03 Inteligência que age/ });
   await ai.click();
   await expect(ai).toHaveAttribute("aria-expanded", "true");
-  await expect(page.locator(".ns-cap-ai")).toBeVisible();
+  await expect(page.locator(".ns-service-stage .ns-world-ai")).toHaveAttribute("data-ready", "true");
 });
 
 test("project chapters lead with visuals and reveal supporting details on request", async ({ page }) => {
@@ -44,6 +45,16 @@ test("project chapters lead with visuals and reveal supporting details on reques
     await details.locator("summary").click();
     await expect(details).toHaveAttribute("open", "");
     await expect(details.getByText("O DESAFIO")).toBeVisible();
+  }
+});
+
+test("different 3D worlds render in services, about and contact", async ({ page }) => {
+  await page.goto("/");
+  for (const [section, variant] of [["#servicos", "sites"], ["#sobre", "monolith"], ["#contato", "burst"]] as const) {
+    const world = page.locator(`${section} .ns-world-${variant}`);
+    await world.scrollIntoViewIfNeeded();
+    await expect(world).toHaveAttribute("data-ready", "true");
+    await expect(world.locator("canvas")).toHaveCount(1);
   }
 });
 
