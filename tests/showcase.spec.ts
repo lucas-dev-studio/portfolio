@@ -32,6 +32,21 @@ test("service controls switch both content and visual", async ({ page }) => {
   await expect(page.locator(".ns-cap-ai")).toBeVisible();
 });
 
+test("project chapters lead with visuals and reveal supporting details on request", async ({ page }) => {
+  await page.goto("/");
+  for (const id of ["sobre-sandbox", "sobre-educacional"]) {
+    const chapter = page.locator(`#${id}`);
+    const visual = chapter.locator(".ns-project-showcase");
+    const info = chapter.locator(".ns-project-info");
+    expect((await visual.boundingBox())!.width).toBeGreaterThan((await info.boundingBox())!.width * 0.8);
+    const details = chapter.locator("details");
+    await expect(details).not.toHaveAttribute("open", "");
+    await details.locator("summary").click();
+    await expect(details).toHaveAttribute("open", "");
+    await expect(details.getByText("O DESAFIO")).toBeVisible();
+  }
+});
+
 test("mobile menu, anchors and layouts work without horizontal overflow", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");

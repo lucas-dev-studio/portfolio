@@ -191,3 +191,60 @@
 @media (max-width: 550px) { .ns-header-cta { display: none; }.ns-logo { margin-right: auto; }.ns-hero { min-height: 980px; }.ns-hero-top > span:last-child { display: none; }.ns-hero-top { padding-top: 22px; }.ns-hero-main { min-height: 850px; }.ns-hero-copy { padding-top: 65px; }.ns-hero h1 { font-size: clamp(60px,15.5vw,90px); }.ns-kicker { font-size: 9px; }.ns-hero-object { width: 115vw; height: 115vw; top: 43%; right: -34%; max-width: none; max-height: none; opacity: .8; }.ns-hero-sub { position: relative; z-index: 4; margin-top: 25px; }.ns-hero-sub p { font-size: 14px; max-width: 280px; }.ns-hero-bottom { font-size: 8px; }.ns-object-caption { display: none; }.ns-marquee { height: 61px; }.ns-marquee > div { font-size: 18px; gap: 25px; }.ns-manifesto-grid { padding-block: 95px; }.ns-manifesto h2 { font-size: clamp(41px,10vw,62px); }.ns-manifesto-bottom { margin-top: 40px; gap: 15px; }.ns-manifesto-bottom p { font-size: 15px; }.ns-manifesto-bottom a { width: 54px; height: 54px; }.ns-section-head h2, .ns-project-intro h2, .ns-process-header h2 { font-size: clamp(40px,10vw,58px); }.ns-services { padding-bottom: 90px; }.ns-section-head { margin-bottom: 40px; }.ns-service > button { gap: 13px; padding: 20px 0; min-height: 80px; }.ns-service-title { font-size: 23px; }.ns-service > button > svg:not(.ns-service-arrow) { display: none; }.ns-service-content { padding-left: 28px; }.ns-service-content > p { font-size: 14px; }.ns-service-stage { min-height: 370px; }.ns-stage-label, .ns-stage-index { left: 18px; font-size: 8px; }.ns-stage-label { top: 18px; }.ns-stage-index { bottom: 18px; }.ns-ui-browser { width: 76%; }.ns-ui-body b { font-size: 25px; }.ns-ui-float { font-size: 7px; padding: 9px 11px; }.ns-flow-card { padding: 12px; }.ns-flow-card b { font-size: 18px; }.ns-ai-message { font-size: 9px; padding: 9px; }.ns-project-intro { padding-block: 95px; gap: 30px; }.ns-project-intro > p:last-child { font-size: 15px; margin-top: 0; }.ns-project { padding-block: 80px; }.ns-project-info h3 { font-size: clamp(54px,13vw,76px); }.ns-project-lead { font-size: 21px !important; }.ns-project-info > p:not(.ns-project-lead) { font-size: 14px; }.ns-project-facts { gap: 16px; }.ns-project-facts p { font-size: 11px; }.ns-floating-stamp { width: 75px; height: 75px; }.ns-floating-stamp span { font-size: 9px; }.ns-image-note { font-size: 7px; }.ns-education-ui { border-width: 5px; }.ns-education-bar > span:nth-child(2) { display: none; }.ns-education-body h4 { font-size: clamp(24px,8vw,36px); }.ns-game-grid { gap: 5px; }.ns-game-grid > div { padding: 8%; }.ns-game-grid b { font-size: 8px; }.ns-game-grid span { font-size: 6px; }.ns-game-grid svg { width: 12px; }.ns-tutor { font-size: 6px; gap: 5px; }.ns-about { padding-block: 90px; }.ns-about-copy h2 { font-size: 74px; margin: 25px 0; }.ns-about-copy > p:not(.ns-section-label) { font-size: 15px; }.ns-process { padding-block: 90px; }.ns-process-grid { grid-template-columns: 1fr; margin-top: 70px; gap: 40px; }.ns-process-step { min-height: 0; }.ns-process-step h3 { margin: 30px 0 14px; }.ns-contact { padding: 90px 0 80px; }.ns-contact-top > span:last-child { display: none; }.ns-contact h2 { font-size: clamp(53px,13vw,78px); margin: 60px 0 140px; }.ns-contact-mark { top: 47%; right: 13%; width: 95px; }.ns-contact-mark::before { display: none; }.ns-contact-bottom { align-items: start; flex-direction: column; }.ns-contact-bottom p { font-size: 15px; }.ns-footer > div > span:nth-child(2) { font-size: 8px; text-align: right; }.ns-footer > div > div { gap: 10px 18px; } }
 @media (max-width: 550px) { .ns-motion-toggle { bottom: 2%; right: 0; }.ns-marquee button { height: 61px; flex-basis: 54px; } }
 @media (prefers-reduced-motion: reduce) { .ns-marquee > div, .ns-object-halo::after, .ns-ai-aura { animation: none !important; }.ns-tilt, .ns-sandbox-screen, .ns-education-screen { transform: none !important; } }
+
+/* Project chapters: let the work occupy the screen; supporting copy opens on demand. */
+.ns-project { padding-block: clamp(70px, 8vw, 130px); }
+.ns-project-frame,
+.ns-project-education .ns-project-frame { display: flex; flex-direction: column; align-items: stretch; gap: clamp(26px, 4vw, 55px); }
+.ns-project-info { width: 100%; }
+.ns-project-title-row { display: flex; justify-content: space-between; align-items: end; gap: 30px; }
+.ns-project-title-row h3 { margin: clamp(28px, 4vw, 56px) 0 6px; }
+.ns-project-title-row .ns-project-lead { margin-bottom: 0 !important; }
+.ns-project-title-row .ns-arrow-link { flex-shrink: 0; margin-bottom: 7px; }
+.ns-project-showcase { width: 100%; max-width: 1240px; align-self: center; }
+.ns-sandbox-screen { width: 100%; transform: rotate(-2deg); box-shadow: 0 45px 95px #080b2e9c, 18px 20px 0 #667bd355; }
+.ns-sandbox-screen img { aspect-ratio: 16 / 8.5; }
+.ns-education-screen { width: min(92%, 1130px); margin-inline: auto; transform: rotate(2deg); }
+.ns-education-ui { aspect-ratio: 1.75; }
+.ns-education-body h4 { font-size: clamp(45px, 5vw, 80px); margin-block: 2% 3%; }
+.ns-game-grid { height: 30%; }
+.ns-game-grid b { font-size: clamp(17px, 2vw, 29px); }
+.ns-game-grid span, .ns-education-body > span { font-size: 11px; }
+.ns-tutor { font-size: 11px; }
+.ns-floating-stamp { right: -2%; bottom: 10%; }
+.ns-project-details { border-top: 1px solid currentColor; padding-top: 18px; width: 100%; }
+.ns-project-details summary { cursor: pointer; display: flex; align-items: center; justify-content: space-between; min-height: 48px; font: 600 13px/1.2 "Space Grotesk",sans-serif; letter-spacing: .09em; text-transform: uppercase; list-style: none; }
+.ns-project-details summary::-webkit-details-marker { display: none; }
+.ns-project-details summary svg { transition: transform .25s ease; }
+.ns-project-details[open] summary svg { transform: rotate(180deg); }
+.ns-project-details > div { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: clamp(20px, 4vw, 60px); padding: 26px 0 12px; }
+.ns-project-details p { font-size: clamp(15px, 1.15vw, 18px); line-height: 1.6; margin: 0; }
+.ns-project-details span { display: block; margin-bottom: 10px; font: 700 10px/1.3 "Space Grotesk",sans-serif; letter-spacing: .12em; }
+.ns-project-details .ns-project-tags { grid-column: 1 / -1; margin: 4px 0 0; }
+.ns-project-details .ns-project-tags span { margin: 0; }
+.ns-project-education .ns-project-info,
+.ns-project-education .ns-project-showcase { order: initial; }
+
+@media (max-width: 800px) {
+  .ns-project-title-row { align-items: start; flex-direction: column; gap: 22px; }
+  .ns-project-title-row h3 { margin-top: 26px; }
+  .ns-project-details > div { grid-template-columns: 1fr 1fr; }
+  .ns-project-details > div > p:first-child { grid-column: 1 / -1; }
+  .ns-education-screen { width: 100%; }
+}
+@media (max-width: 550px) {
+  .ns-project { padding-block: 72px; }
+  .ns-project-frame { gap: 28px; }
+  .ns-project-title-row h3 { font-size: clamp(54px, 13vw, 76px); }
+  .ns-project-title-row .ns-project-lead { font-size: 19px !important; }
+  .ns-sandbox-screen img { aspect-ratio: 4 / 3; object-fit: cover; }
+  .ns-floating-stamp { right: -1%; width: 69px; height: 69px; }
+  .ns-education-ui { aspect-ratio: 1.12; }
+  .ns-education-body h4 { font-size: clamp(28px, 8vw, 42px); margin-block: 5% 7%; }
+  .ns-game-grid { height: 30%; }
+  .ns-game-grid b { font-size: 10px; }
+  .ns-game-grid span, .ns-education-body > span, .ns-tutor { font-size: 7px; }
+  .ns-project-details > div { grid-template-columns: 1fr; }
+  .ns-project-details > div > p:first-child { grid-column: 1; }
+  .ns-project-details .ns-project-tags { grid-column: 1; }
+}
