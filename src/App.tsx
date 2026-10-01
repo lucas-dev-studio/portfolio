@@ -1,4 +1,5 @@
-import TimelineDemo from "@/components/demo";
+import NewSite from "@/components/new-site";
+
 export default function App() {
-  return <TimelineDemo />;
+  return <NewSite />;
 }

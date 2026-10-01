@@ -25,7 +25,7 @@ Me conte sua ideia pelo [WhatsApp](https://wa.me/5511965117938?text=Ol%C3%A1%2C%
 
 ## Este site
 
-Feito com React, TypeScript, Tailwind CSS, GSAP, Framer Motion e Three.js. As cenas 3D são próprias; animações respeitam a preferência por movimento reduzido, e a navegação continua funcional sem WebGL. O deploy público usa Cloudflare Pages.
+Feito com React, TypeScript, Tailwind CSS, Framer Motion e Three.js. A escultura 3D é própria; o movimento pode ser pausado e respeita a preferência por movimento reduzido. O deploy público usa Cloudflare Pages.
 
 ```bash
 npm ci
@@ -45,9 +45,8 @@ Node.js 22.12+ é recomendado. Os testes de navegador usam Playwright e podem ex
 
 ## Organização
 
-- `src/components/demo.tsx`: página comercial e apresentação dos serviços.
-- `src/components/ui/timeline.tsx`: seção de projetos.
-- `src/components/digital-sculpture.tsx` e `src/components/sculpture-variants.ts`: cenas 3D.
+- `src/components/new-site.tsx` e `new-site.css`: página comercial, interações e apresentação dos projetos.
+- `src/components/digital-sculpture.tsx` e `sculpture-geometry.ts`: escultura 3D.
 - `src/data/projects.ts`: conteúdo dos dois projetos.
 - `src/data/contact.ts`: links de contato.
 - `public/_headers`: cabeçalhos de segurança no Cloudflare Pages.

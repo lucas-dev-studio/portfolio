@@ -51,27 +51,25 @@ test('CSP blocks inline script, external scripts and data connections', async ({
   expect(results).toEqual({ inline: undefined, external: false, connection: false });
 });
 
-test('3D, navigation, panels and contact work under CSP without violations', async ({ page, context }) => {
+test('3D, services and contact work under CSP without violations', async ({ page, context }) => {
   const errors: string[] = [];
   const requests: string[] = [];
   page.on('pageerror', e => errors.push(e.message));
   page.on('console', message => { if (/Content Security Policy|Refused to/i.test(message.text())) errors.push(message.text()); });
   page.on('request', r => requests.push(r.url()));
   await page.goto('/');
-  await expect(page.locator('.hero-sequence .sculpture-canvas')).toHaveAttribute('data-ready','true');
+  await expect(page.locator('.ns-hero-object .sculpture-canvas')).toHaveAttribute('data-ready','true');
   await page.getByRole('button', {name:'Pausar animação 3D', exact:true}).click();
   await expect(page.getByRole('button', {name:'Reproduzir animação 3D',exact:true})).toBeVisible();
-  await page.getByRole('button',{name:'02 Menos tarefas. Mais tempo.'}).click();
-  await expect(page.locator('#painel-automacao')).toBeVisible();
-  for (const selector of ['.service-sculpture','.about-sculpture','.contact-sculpture']) {
-    await page.locator(selector).scrollIntoViewIfNeeded();
-    await expect(page.locator(`${selector} .sculpture-canvas`)).toHaveAttribute('data-ready','true');
-  }
+  await page.getByRole('button',{name:/02 Menos repetição/}).click();
+  await expect(page.locator('.ns-cap-automation')).toBeVisible();
   const links = await page.locator('a[target="_blank"]').evaluateAll(links => links.map(el => ({href:(el as HTMLAnchorElement).href,rel:el.getAttribute('rel')})));
-  expect(links.length).toBeGreaterThan(5);
+  expect(links.length).toBeGreaterThan(3);
   for (const link of links) {
-    expect(new URL(link.href).origin).toBe('https://wa.me');
-    expect(new URL(link.href).pathname).toBe('/5511965117938');
+    const url = new URL(link.href);
+    expect(['https://wa.me','https://github.com']).toContain(url.origin);
+    if (url.origin === 'https://wa.me') expect(url.pathname).toBe('/5511965117938');
+    if (url.origin === 'https://github.com') expect(url.pathname).toBe('/lucas-dev-studio');
     expect(link.rel).toContain('noopener'); expect(link.rel).toContain('noreferrer');
   }
   const origin = new URL(page.url()).origin;
@@ -83,7 +81,7 @@ test('3D, navigation, panels and contact work under CSP without violations', asy
 
 test('query and fragment payloads are never rendered as markup or redirects', async ({ page }) => {
   await page.goto('/?next=https://untrusted.invalid&name=%3Csvg%20onload%3Dalert(1)%3E#%3Cimg%20src%3Dx%3E');
-  await expect(page.locator('h1')).toContainText('SEU PRÓXIMO');
+  await expect(page.locator('h1')).toHaveAttribute('aria-label','Ideias que movem.');
   expect(new URL(page.url()).hostname).not.toBe('untrusted.invalid');
   expect(await page.locator('svg[onload],img[src="x"]').count()).toBe(0);
 });

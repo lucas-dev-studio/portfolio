@@ -17,17 +17,11 @@ test("actual meshes have disjoint radial shells under arbitrary rotation",()=>{
  Object.values(geometry).forEach(g=>g.dispose());
 });
 
-test("additional 3D scenes mount near view and their pause controls work",async({page})=>{
+test("hero sculpture mounts and its pause control works",async({page})=>{
  await page.goto("/");
- for(const selector of [".service-sculpture",".about-sculpture",".contact-sculpture"]){
-  const panel=page.locator(selector);
-  await panel.scrollIntoViewIfNeeded();
-  await expect(panel.locator(".sculpture-canvas")).toHaveAttribute("data-ready","true");
-  const button=panel.getByRole("button");
-  await button.click();
-  await expect(button).toHaveAttribute("aria-pressed","true");
-  await panel.screenshot({path:`../preview-3d-${selector.slice(1)}.png`});
- }
+ await expect(page.locator(".ns-hero-object .sculpture-canvas")).toHaveAttribute("data-ready","true");
+ await page.getByRole("button",{name:"Pausar animação 3D"}).click();
+ await expect(page.getByRole("button",{name:"Reproduzir animação 3D"})).toBeVisible();
  await page.emulateMedia({reducedMotion:"reduce"});
- await expect(page.locator(".contact-sculpture button")).toBeDisabled();
+ await expect(page.getByRole("button",{name:"Animação desativada pela preferência de movimento reduzido"})).toBeDisabled();
 });
