@@ -58,11 +58,11 @@ test('3D, services and contact work under CSP without violations', async ({ page
   page.on('console', message => { if (/Content Security Policy|Refused to/i.test(message.text())) errors.push(message.text()); });
   page.on('request', r => requests.push(r.url()));
   await page.goto('/');
-  await expect(page.locator('.ns-hero-object .sculpture-canvas')).toHaveAttribute('data-ready','true');
-  await page.getByRole('button', {name:'Pausar animação 3D', exact:true}).click();
-  await expect(page.getByRole('button', {name:'Reproduzir animação 3D',exact:true})).toBeVisible();
-  await page.getByRole('button',{name:/02 Automação em movimento/}).click();
-  await expect(page.locator('.ns-world-automation')).toHaveAttribute('data-ready','true');
+  await expect(page.locator('[data-scene=hero]')).toHaveAttribute('data-ready','true');
+  await page.getByRole('button', {name:'Pausar animações', exact:true}).click();
+  await expect(page.getByRole('button', {name:'Reproduzir animações',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Automação',exact:true}).click();
+  await expect(page.locator('[data-scene=systems][data-service=automation]')).toHaveAttribute('data-ready','true');
   const links = await page.locator('a[target="_blank"]').evaluateAll(links => links.map(el => ({href:(el as HTMLAnchorElement).href,rel:el.getAttribute('rel')})));
   expect(links.length).toBeGreaterThan(3);
   for (const link of links) {
@@ -81,7 +81,7 @@ test('3D, services and contact work under CSP without violations', async ({ page
 
 test('query and fragment payloads are never rendered as markup or redirects', async ({ page }) => {
   await page.goto('/?next=https://untrusted.invalid&name=%3Csvg%20onload%3Dalert(1)%3E#%3Cimg%20src%3Dx%3E');
-  await expect(page.locator('h1')).toHaveAttribute('aria-label','Ideias que movem.');
+  await expect(page.locator('h1')).toHaveAttribute('aria-label','Seu próximo salto.');
   expect(new URL(page.url()).hostname).not.toBe('untrusted.invalid');
   expect(await page.locator('svg[onload],img[src="x"]').count()).toBe(0);
 });

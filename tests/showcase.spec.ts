@@ -1,94 +1,120 @@
-import { test, expect } from "@playwright/test";
-import AxeBuilder from "@axe-core/playwright";
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
-test("desktop presents two real cases and a clear contact path", async ({ page }) => {
+const scene = (chapter: string) => `[data-scene="${chapter}"]`;
+
+test('Lucas presents two real projects and a direct quotation route', async ({ page }) => {
   const errors: string[] = [];
-  page.on("pageerror", error => errors.push(error.message));
-  await page.goto("/");
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('/');
   await expect(page).toHaveTitle(/Lucas/);
-  await expect(page.locator(".ns-project")).toHaveCount(2);
-  await expect(page.locator(".ns-hero-object .sculpture-canvas")).toHaveAttribute("data-ready", "true");
-  await expect(page.getByRole("heading", { name: "SANDBOX®" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "APRENDER+" })).toBeVisible();
-  await expect(page.locator("#sobre-sandbox img")).toHaveAttribute("src", "/images/sandbox.png");
-  await expect(page.locator("#sobre-educacional [role='img']")).toHaveAttribute("aria-label", /Representação visual/);
-  const quote = page.getByRole("link", { name: "Vamos construir o seu" });
-  const url = new URL((await quote.getAttribute("href"))!);
-  expect(url.hostname).toBe("wa.me");
-  expect(url.pathname).toBe("/5511965117938");
+  await expect(page.getByRole('heading', { level: 1 })).toContainText(/próximo\s*salto/i);
+  await expect(page.locator(scene('hero'))).toHaveAttribute('data-ready', 'true', { timeout: 15000 });
+  for (const id of ['sobre-sandbox', 'sobre-educacional']) {
+    const project = page.locator(`#${id}`);
+    await project.scrollIntoViewIfNeeded();
+    await expect(project.getByRole('heading')).toBeVisible();
+    const details = project.locator('details');
+    await expect(details).not.toHaveAttribute('open', '');
+    await details.locator('summary').click();
+    await expect(details).toHaveAttribute('open', '');
+    await expect(project).toContainText(/Azure/);
+    await expect(details).toContainText(/desafio/i);
+  }
+  await expect(page.locator('#sobre-educacional')).toContainText(/representação/i);
+  const quote = page.getByRole('link', { name: 'Começar um projeto', exact: true }).first();
+  const contact = new URL((await quote.getAttribute('href'))!);
+  expect(contact.origin).toBe('https://wa.me');
+  expect(contact.pathname).toBe('/5511965117938');
   expect(errors).toEqual([]);
 });
 
-test("service controls switch both content and visual", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.locator(".ns-service-stage .ns-world-sites")).toHaveAttribute("data-ready", "true");
-  const automation = page.getByRole("button", { name: /02 Automação em movimento/ });
-  await automation.click();
-  await expect(automation).toHaveAttribute("aria-expanded", "true");
-  await expect(page.getByText("O trabalho repetitivo sai de cena.", { exact: true })).toBeVisible();
-  await expect(page.locator(".ns-service-stage .ns-world-automation")).toHaveAttribute("data-ready", "true");
-  const ai = page.getByRole("button", { name: /03 Inteligência que age/ });
-  await ai.click();
-  await expect(ai).toHaveAttribute("aria-expanded", "true");
-  await expect(page.locator(".ns-service-stage .ns-world-ai")).toHaveAttribute("data-ready", "true");
-});
-
-test("project chapters lead with visuals and reveal supporting details on request", async ({ page }) => {
-  await page.goto("/");
-  for (const id of ["sobre-sandbox", "sobre-educacional"]) {
-    const chapter = page.locator(`#${id}`);
-    const visual = chapter.locator(".ns-project-showcase");
-    const info = chapter.locator(".ns-project-info");
-    expect((await visual.boundingBox())!.width).toBeGreaterThan((await info.boundingBox())!.width * 0.8);
-    const details = chapter.locator("details");
-    await expect(details).not.toHaveAttribute("open", "");
-    await details.locator("summary").click();
-    await expect(details).toHaveAttribute("open", "");
-    await expect(details.getByText("O DESAFIO")).toBeVisible();
-  }
-});
-
-test("different 3D worlds render in services, about and contact", async ({ page }) => {
-  await page.goto("/");
-  for (const [section, variant] of [["#servicos", "sites"], ["#sobre", "monolith"], ["#contato", "burst"]] as const) {
-    const world = page.locator(`${section} .ns-world-${variant}`);
+test('all five spatial chapters render usable canvases', async ({ page }) => {
+  await page.goto('/');
+  for (const chapter of ['hero', 'sandbox', 'education', 'systems', 'contact']) {
+    const world = page.locator(scene(chapter));
     await world.scrollIntoViewIfNeeded();
-    await expect(world).toHaveAttribute("data-ready", "true");
-    await expect(world.locator("canvas")).toHaveCount(1);
+    await expect(world).toHaveAttribute('data-ready', 'true', { timeout: 15000 });
+    await expect(world.locator('canvas')).toHaveCount(1);
+    const box = (await world.locator('canvas').boundingBox())!;
+    expect(box.width).toBeGreaterThan(300);
+    expect(box.height).toBeGreaterThan(300);
   }
 });
 
-test("mobile menu, anchors and layouts work without horizontal overflow", async ({ page }) => {
+test('service controls select distinct spatial assemblies and contextual contact', async ({ page }) => {
+  await page.goto('/');
+  const section = page.locator('#servicos');
+  await section.scrollIntoViewIfNeeded();
+  for (const [name, value] of [['Sites', 'sites'], ['Automação', 'automation'], ['IA', 'ai']]) {
+    const control = section.getByRole('button', { name, exact: true });
+    await control.click();
+    await expect(control).toHaveAttribute('aria-pressed', 'true');
+    await expect(section.locator(scene('systems'))).toHaveAttribute('data-service', value);
+    await expect(section.locator(scene('systems'))).toHaveAttribute('data-ready', 'true', { timeout: 15000 });
+  }
+});
+
+test('global pause freezes rendered 3D and remains active in later chapters', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator(scene('hero'))).toHaveAttribute('data-ready', 'true', { timeout: 15000 });
+  await page.getByRole('button', { name: 'Pausar animações', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Reproduzir animações', exact: true })).toBeVisible();
+  await expect(page.locator('[data-scene][data-paused="false"]')).toHaveCount(0);
+  const canvas = page.locator(`${scene('hero')} canvas`);
+  await page.waitForTimeout(200);
+  const first = await canvas.screenshot();
+  await page.waitForTimeout(300);
+  expect((await canvas.screenshot()).equals(first)).toBe(true);
+  const contact = page.locator(scene('contact'));
+  await contact.scrollIntoViewIfNeeded();
+  await expect(contact).toHaveAttribute('data-paused', 'true');
+  await expect(contact).toHaveAttribute('data-ready', 'true', { timeout: 15000 });
+});
+
+test('portrait navigation and all chapter layouts preserve access without overflow', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
-  const menu = page.getByRole("button", { name: "Abrir menu" });
+  await page.goto('/');
+  const menu = page.getByRole('button', { name: 'Abrir menu', exact: true });
   await menu.click();
-  await expect(page.getByRole("button", { name: "Fechar menu" })).toHaveAttribute("aria-expanded", "true");
-  await page.getByRole("navigation", { name: "Navegação principal" }).getByRole("link", { name: /Projetos/i }).click();
+  await expect(page.getByRole('button', { name: 'Fechar menu', exact: true })).toHaveAttribute('aria-expanded', 'true');
+  await page.keyboard.press('Escape');
+  await expect(menu).toHaveAttribute('aria-expanded', 'false');
+  await menu.click();
+  await page.getByRole('navigation', { name: 'Navegação principal' }).getByRole('link', { name: /Projetos/ }).click();
   await expect(page).toHaveURL(/#projetos$/);
-  await expect(page.getByRole("button", { name: "Abrir menu" })).toHaveAttribute("aria-expanded", "false");
-  for (const width of [375, 390, 768, 1024, 1440]) {
+  await expect(menu).toHaveAttribute('aria-expanded', 'false');
+});
+
+for (const width of [375, 390, 768, 1024, 1440]) {
+  test('chapter layouts avoid overflow at ' + width + 'px', async ({ page }) => {
+    await page.goto('/');
     await page.setViewportSize({ width, height: 900 });
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    for (const id of ['inicio', 'sobre-sandbox', 'sobre-educacional', 'servicos', 'contato']) {
+      await page.locator(`#${id}`).scrollIntoViewIfNeeded();
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    }
+  });
+}
+
+test('reduced motion preserves final project evidence, controls and contact', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: 'Movimento reduzido', exact: true })).toBeDisabled();
+  await expect(page.locator('[data-scene][data-paused="false"]')).toHaveCount(0);
+  for (const id of ['sobre-sandbox', 'sobre-educacional', 'contato']) {
+    const section = page.locator(`#${id}`);
+    await section.scrollIntoViewIfNeeded();
+    await expect(section.getByRole('heading').first()).toBeVisible();
+    await expect(section.getByRole('link').first()).toBeVisible();
   }
 });
 
-test("motion can be paused and reduced-motion preference keeps content readable", async ({ page }) => {
-  await page.goto("/");
-  await page.getByRole("button", { name: "Pausar animação 3D" }).click();
-  await expect(page.getByRole("button", { name: "Reproduzir animação 3D" })).toBeVisible();
-  await page.getByRole("button", { name: "Pausar faixa animada" }).click();
-  await expect(page.locator(".ns-marquee-paused")).toBeVisible();
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await expect(page.getByRole("button", { name: "Animação desativada pela preferência de movimento reduzido" })).toBeDisabled();
-  await expect(page.locator(".ns-manifesto h2")).toBeVisible();
-});
-
-test("internal destinations and accessibility scan", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
-  const invalid = await page.locator('a[href^="#"]').evaluateAll(links => links.map(e => e.getAttribute("href")).filter(href => !href || !document.getElementById(href.slice(1))));
+test('internal anchors and accessibility scan preserve the whole experience', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('/');
+  const invalid = await page.locator('a[href^="#"]').evaluateAll(links => links.map(el => el.getAttribute('href')).filter(href => !href || !document.getElementById(href.slice(1))));
   expect(invalid).toEqual([]);
-  const result = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+  const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
   expect(result.violations.map(v => ({ id: v.id, nodes: v.nodes.map(n => n.target) }))).toEqual([]);
 });

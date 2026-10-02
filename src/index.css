@@ -8,15 +8,15 @@
 
 :root {
   font-family: "Archivo", sans-serif;
-  color: #f3f2ed;
-  background: #0a0b10;
+  color: #e9e6df;
+  background: #161715;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  --background: #0a0b10;
-  --foreground: #f3f2ed;
-  --primary: #a7ff42;
-  --primary-foreground: #0a0b10;
+  --background: #161715;
+  --foreground: #e9e6df;
+  --primary: #ff5b24;
+  --primary-foreground: #161715;
   --muted-foreground: #a5a7b2;
   --border: #3d3e45;
   --card: #171922;
@@ -36,15 +36,15 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
 body { margin: 0; min-width: 320px; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; font: inherit; }
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
 svg { flex-shrink: 0; }
-::selection { color: #08090c; background: #a7ff42; }
-:focus-visible { outline: 2px solid #a7ff42; outline-offset: 5px; }
+::selection { color: #08090c; background: #ff5b24; }
+:focus-visible { outline: 2px solid #ff5b24; outline-offset: 5px; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }

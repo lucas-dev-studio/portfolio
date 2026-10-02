@@ -1,274 +1,76 @@
-import { createContext, lazy, Suspense, useContext, useRef, useState, type ReactNode } from "react";
-import {
-  motion,
-  useMotionValue,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "framer-motion";
-import {
-  ArrowDown,
-  ArrowUpRight,
-  Asterisk,
-  BrainCircuit,
-  Check,
-  Code2,
-  ExternalLink,
-  Menu,
-  Pause,
-  Play,
-  Sparkles,
-  Workflow,
-  X,
-} from "lucide-react";
-import { useReducedMotion } from "@/lib/use-reduced-motion";
-import { projects } from "@/data/projects";
-import { whatsappLabel, whatsappUrl } from "@/data/contact";
-import "./new-site.css";
+import { createContext, lazy, Suspense, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { ArrowDown, ArrowUpRight, Menu, Pause, Play, X, Plus } from 'lucide-react';
+import { useReducedMotion } from '@/lib/use-reduced-motion';
+import { projects, type Project } from '@/data/projects';
+import { whatsappUrl, whatsappLabel } from '@/data/contact';
+import './new-site.css';
 
-const Sculpture = lazy(() => import("./digital-sculpture"));
-const KineticWorld = lazy(() => import("./kinetic-world"));
-const MotionContext = createContext({ paused: false, toggle: () => {} });
-
-const easing = [0.22, 1, 0.36, 1] as const;
-
-const capabilities = [
-  {
-    number: "01",
-    icon: Code2,
-    label: "DESIGN & DESENVOLVIMENTO",
-    title: "Sites em outra dimensão.",
-    body: "Presença digital para ser lembrada.",
-    tags: ["Sites institucionais", "Landing pages", "Experiências interativas"],
-    visual: "sites",
-    contact: "um site ou landing page",
-  },
-  {
-    number: "02",
-    icon: Workflow,
-    label: "PYTHON & INTEGRAÇÕES",
-    title: "Automação em movimento.",
-    body: "O trabalho repetitivo sai de cena.",
-    tags: ["Automações", "Integrações", "Fluxos internos"],
-    visual: "automation",
-    contact: "uma automação em Python",
-  },
-  {
-    number: "03",
-    icon: BrainCircuit,
-    label: "INTELIGÊNCIA ARTIFICIAL",
-    title: "Inteligência que age.",
-    body: "IA aplicada a um problema real.",
-    tags: ["Assistentes", "Recursos com IA", "Produtos digitais"],
-    visual: "ai",
-    contact: "uma solução com inteligência artificial",
-  },
+const StudioScene = lazy(() => import('./studio-scene'));
+const MotionContext = createContext({ paused: false });
+const ease = [0.22, 1, 0.36, 1] as const;
+const services = [
+  { key: 'sites', title: 'Sites', copy: 'Uma presença digital feita para transformar atenção em oportunidade.', inquiry: 'um site ou landing page' },
+  { key: 'automation', title: 'Automação', copy: 'Menos tarefas repetidas. Mais tempo para o que faz seu negócio avançar.', inquiry: 'uma automação em Python' },
+  { key: 'ai', title: 'IA', copy: 'Inteligência artificial conectada a um problema concreto do seu negócio.', inquiry: 'uma solução com inteligência artificial' },
 ] as const;
 
-function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+function Reveal({ children, className = '' }: { children: ReactNode; className?: string }) {
   const reduced = useReducedMotion();
-  return (
-    <motion.div
-      className={className}
-      initial={reduced ? false : { opacity: 0, y: 42 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.12 }}
-      transition={{ duration: reduced ? 0 : 0.85, delay, ease: easing }}
-    >
-      {children}
-    </motion.div>
-  );
+  const { paused } = useContext(MotionContext);
+  return <motion.div className={className} initial={reduced || paused ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.12 }} transition={{ duration: reduced || paused ? 0 : 0.8, ease }}>{children}</motion.div>;
 }
-
-function ArrowLink({ children, href, light = false, className = "" }: { children: ReactNode; href: string; light?: boolean; className?: string }) {
+function Link({ href, children, className = '' }: { href: string; children: ReactNode; className?: string }) {
+  const external = href.startsWith('https:');
+  return <a className={`ns-link ${className}`} href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}><span>{children}</span><ArrowUpRight size={18} strokeWidth={1.5} aria-hidden="true" /></a>;
+}
+function Stage({ chapter, service, className = '' }: { chapter: 'hero' | 'sandbox' | 'education' | 'systems' | 'contact'; service?: 'sites' | 'automation' | 'ai'; className?: string }) {
   const reduced = useReducedMotion();
-  return (
-    <motion.a
-      className={`ns-arrow-link ${light ? "ns-arrow-link-light" : ""} ${className}`}
-      href={href}
-      target={href.startsWith("http") ? "_blank" : undefined}
-      rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-      whileHover={reduced ? undefined : { y: -3 }}
-      whileTap={reduced ? undefined : { scale: 0.98 }}
-    >
-      <span>{children}</span>
-      <span className="ns-link-icon"><ArrowUpRight size={20} aria-hidden="true" /></span>
-    </motion.a>
-  );
+  const { paused } = useContext(MotionContext);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: stageRef, offset: ['start end', 'end start'] });
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.97, 1, 0.97]);
+  return <motion.div ref={stageRef} className={`ns-stage ${className}`} style={reduced || paused || (chapter !== 'sandbox' && chapter !== 'education') ? undefined : { scale }} aria-hidden="true"><Suspense fallback={<div className="ns-stage-loading"><span /><span /><span /></div>}><StudioScene chapter={chapter} service={service} progress={reduced ? 0.5 : scrollYProgress} paused={paused || reduced} /></Suspense>{chapter === 'sandbox' && <img className="ns-sandbox-fallback" src="/images/sandbox.png" alt="" loading="lazy" />}</motion.div>;
 }
-
-function Tilt({ children, className = "" }: { children: ReactNode; className?: string }) {
-  const reduced = useReducedMotion();
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
-  const sx = useSpring(mx, { stiffness: 130, damping: 20 });
-  const sy = useSpring(my, { stiffness: 130, damping: 20 });
-  const rotateX = useTransform(sy, [-0.5, 0.5], [5, -5]);
-  const rotateY = useTransform(sx, [-0.5, 0.5], [-7, 7]);
-  return (
-    <motion.div
-      className={`ns-tilt ${className}`}
-      style={reduced ? undefined : { rotateX, rotateY }}
-      onPointerMove={(event) => {
-        if (reduced || event.pointerType === "touch") return;
-        const rect = event.currentTarget.getBoundingClientRect();
-        mx.set((event.clientX - rect.left) / rect.width - 0.5);
-        my.set((event.clientY - rect.top) / rect.height - 0.5);
-      }}
-      onPointerLeave={() => { mx.set(0); my.set(0); }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
 function Header() {
   const [open, setOpen] = useState(false);
-  return (
-    <header className="ns-header">
-      <a className="ns-logo" href="#inicio" aria-label="Lucas, início">LUCAS<span>®</span><i /></a>
-      <nav className={open ? "ns-nav ns-nav-open" : "ns-nav"} aria-label="Navegação principal">
-        <a href="#projetos" onClick={() => setOpen(false)}>Projetos <span>02</span></a>
-        <a href="#servicos" onClick={() => setOpen(false)}>O que faço</a>
-        <a href="#sobre" onClick={() => setOpen(false)}>Sobre</a>
-        <a className="ns-mobile-contact" href={whatsappUrl()} target="_blank" rel="noopener noreferrer">Vamos conversar <ArrowUpRight size={17} /></a>
-      </nav>
-      <a className="ns-header-cta" href={whatsappUrl()} target="_blank" rel="noopener noreferrer">Seu projeto começa aqui <ArrowUpRight size={16} /></a>
-      <button type="button" className="ns-menu" aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button>
-    </header>
-  );
+  const button = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const close = (event: KeyboardEvent) => { if (event.key === 'Escape') { setOpen(false); button.current?.focus(); } };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  }, [open]);
+  return <header className="ns-header"><a href="#inicio" className="ns-logo" aria-label="Lucas, início">lucas<span>®</span></a><span className="ns-header-note">Desenvolvedor independente</span><nav id="studio-navigation" className={`ns-nav ${open ? 'ns-nav-open' : ''}`} aria-label="Navegação principal"><a href="#projetos" onClick={() => setOpen(false)}>Projetos <sup>02</sup></a><a href="#servicos" onClick={() => setOpen(false)}>Serviços</a><a href="#sobre" onClick={() => setOpen(false)}>Sobre</a><a href="#contato" onClick={() => setOpen(false)}>Contato <ArrowUpRight size={14} aria-hidden="true" /></a></nav><button ref={button} className="ns-menu" aria-label={open ? 'Fechar menu' : 'Abrir menu'} aria-controls="studio-navigation" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</button></header>;
 }
-
 function Hero() {
-  const reduced = useReducedMotion();
-  const { paused, toggle } = useContext(MotionContext);
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 115]);
-  return (
-    <section id="inicio" className="ns-hero" ref={ref}>
-      <div className="ns-hero-grid" aria-hidden="true" />
-      <div className="ns-hero-top ns-wrap">
-        <span><i className="ns-live-dot" /> DISPONÍVEL PARA NOVOS PROJETOS</span>
-        <span>DESENVOLVIMENTO INDEPENDENTE · BRASIL</span>
-      </div>
-      <div className="ns-hero-main ns-wrap">
-        <div className="ns-hero-copy">
-          <motion.p className="ns-kicker" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>LUCAS / DESIGN, CÓDIGO E VISÃO</motion.p>
-          <h1 aria-label="Ideias que movem.">
-            {["IDEIAS", "QUE", "MOVEM."].map((line, index) => (
-              <span className="ns-title-line" key={line}>
-                <motion.span initial={reduced ? false : { y: "115%" }} animate={{ y: 0 }} transition={{ duration: reduced ? 0 : 1.1, delay: index * 0.13 + 0.12, ease: easing }}>{line}</motion.span>
-              </span>
-            ))}
-          </h1>
-          <Reveal className="ns-hero-sub" delay={0.45}>
-            <p>SITES · AUTOMAÇÃO · IA</p>
-            <ArrowLink href={whatsappUrl()} light>Vamos construir o seu</ArrowLink>
-          </Reveal>
-        </div>
-        <motion.div className="ns-hero-object" style={{ y: reduced ? 0 : y }} aria-label="Escultura digital tridimensional interativa">
-          <div className="ns-object-halo" />
-          <span className="ns-object-ghost" aria-hidden="true">L<span>.</span></span>
-          <Suspense fallback={<div className="ns-object-fallback" aria-hidden="true" />}>
-            <Sculpture paused={Boolean(reduced) || paused} />
-          </Suspense>
-          <span className="ns-object-caption"><Asterisk size={13} /> CRIATIVIDADE EM TODAS AS DIMENSÕES</span>
-        </motion.div>
-        <button type="button" className="ns-motion-toggle" onClick={toggle} disabled={Boolean(reduced)} aria-label={reduced ? "Animação desativada pela preferência de movimento reduzido" : paused ? "Reproduzir animação 3D" : "Pausar animação 3D"}>{paused || reduced ? <Play size={13} /> : <Pause size={13} />} <span>{reduced ? "MOVIMENTO REDUZIDO" : paused ? "REPRODUZIR MOTION" : "PAUSAR MOTION"}</span></button>
-      </div>
-      <div className="ns-hero-bottom ns-wrap">
-        <span>01 — 05 / PORTFÓLIO DE LUCAS</span>
-        <a href="#manifesto">ROLE PARA EXPLORAR <ArrowDown size={15} /></a>
-        <span>EST. 2026</span>
-      </div>
-    </section>
-  );
+  const reduced = useReducedMotion();
+  const { paused } = useContext(MotionContext);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
+  const y = useTransform(scrollYProgress, [0, 1], ['0%', '16%']);
+  return <section id="inicio" ref={ref} className="ns-hero"><motion.div className="ns-hero-art" style={reduced || paused ? undefined : { y }}><Stage chapter="hero" /></motion.div><div className="ns-hero-index"><span>Design · Código · Possibilidades</span><span>Portfolio / 2026</span></div><div className="ns-hero-copy"><p className="ns-eyebrow">Lucas — sites, automação e IA</p><h1 aria-label="Seu próximo salto."><span className="ns-heading-mask"><motion.span initial={reduced || paused ? false : { y: '110%' }} animate={{ y: 0 }} transition={{ duration: 1, ease }}>Seu próximo</motion.span></span><span className="ns-heading-mask"><motion.span initial={reduced || paused ? false : { y: '110%' }} animate={{ y: 0 }} transition={{ duration: 1, delay: 0.12, ease }}>salto<span className="ns-orange">.</span></motion.span></span></h1><p className="ns-hero-description">Da sua ideia a uma experiência que faz diferença.</p><div className="ns-hero-actions"><Link href={whatsappUrl()} className="ns-link-primary">Começar um projeto</Link><a className="ns-explore" href="#projetos">Explorar projetos <ArrowDown size={15} aria-hidden="true" /></a></div></div><div className="ns-hero-footer"><span className="ns-desktop-hint">Mova o cursor. Role para explorar.</span><span className="ns-mobile-hint">Role para explorar.</span><a href="#projetos" aria-label="Ir aos projetos selecionados"><ArrowDown size={20} aria-hidden="true" /></a></div></section>;
 }
-
-function Manifesto() {
-  const [paused, setPaused] = useState(false);
-  return (
-    <section id="manifesto" className="ns-manifesto">
-      <div className={`ns-marquee ${paused ? "ns-marquee-paused" : ""}`}><div aria-hidden="true">DESIGN COM INTENÇÃO <Asterisk /> CÓDIGO COM PROPÓSITO <Asterisk /> IDEIAS EM MOVIMENTO <Asterisk /> DESIGN COM INTENÇÃO <Asterisk /> CÓDIGO COM PROPÓSITO <Asterisk /></div><button type="button" onClick={() => setPaused(!paused)} aria-label={paused ? "Reproduzir faixa animada" : "Pausar faixa animada"}>{paused ? <Play size={16} /> : <Pause size={16} />}</button></div>
-      <div className="ns-wrap ns-manifesto-grid">
-        <Reveal className="ns-section-marker"><span>01 / PONTO DE PARTIDA</span><i /></Reveal>
-        <Reveal className="ns-manifesto-content">
-          <h2>UMA IDEIA.<br /><em>UM MUNDO NOVO.</em></h2>
-          <div className="ns-manifesto-bottom"><p>Da ideia à experiência.</p><a href="#projetos" aria-label="Ver projetos"><ArrowDown size={27} /></a></div>
-        </Reveal>
-        <div className="ns-manifesto-kinetic" aria-hidden="true"><span /><span /><span /><span /></div>
-      </div>
-    </section>
-  );
+function ProjectChapter({ project, chapter }: { project: Project; chapter: 'sandbox' | 'education' }) {
+  return <article id={chapter === 'sandbox' ? 'sobre-sandbox' : 'sobre-educacional'} data-project={project.id} className={`studio-project ns-project ns-project-${chapter}`}><div className="ns-project-heading ns-wrap"><Reveal><p className="ns-eyebrow">{project.number} / {project.category}</p><h3>{project.name}</h3></Reveal><Reveal className="ns-project-value"><p>{chapter === 'sandbox' ? 'Decisões do dia a dia. Consequências que você pode explorar.' : 'Jogos e um tutor de IA para transformar estudo em descoberta.'}</p><Link href={whatsappUrl(`um projeto inspirado no ${project.name}`)}>Criar algo assim</Link></Reveal></div><figure className="ns-project-figure"><Stage chapter={chapter} /><figcaption><span>{chapter === 'sandbox' ? 'Captura real do SANDBOX em uma composição 3D.' : 'Representação visual conceitual em 3D. Original em Python / Tkinter.'}</span><span>{chapter === 'sandbox' ? 'Simulação financeira' : 'Quiz · Forca · Caça-palavras'}</span></figcaption></figure><div className="ns-project-bottom ns-wrap"><p className="ns-technologies">{project.technologies.join(' / ')}</p><details className="ns-details"><summary>Por dentro do projeto <Plus size={17} aria-hidden="true" /></summary><div className="ns-details-content"><p>{project.description}</p><div><h4>O desafio</h4><p>{project.problem}</p></div><div><h4>A solução</h4><p>{project.solution}</p></div></div></details></div></article>;
 }
-
+function Projects() {
+  return <section id="projetos" className="ns-projects"><div className="ns-section-title ns-wrap"><p className="ns-eyebrow">01 / Trabalho selecionado</p><h2>Ideias em operação.</h2><span>Dois projetos reais.</span></div>{projects.map((project, index) => <ProjectChapter key={project.id} project={project} chapter={index === 0 ? 'sandbox' : 'education'} />)}</section>;
+}
 function Services() {
   const [active, setActive] = useState(0);
-  const reduced = useReducedMotion();
-  const { paused } = useContext(MotionContext);
-  return (
-    <section id="servicos" className="ns-services">
-      <div className="ns-wrap">
-        <Reveal className="ns-section-head"><p className="ns-section-label">02 / O QUE POSSO CRIAR</p><h2>ESCOLHA UMA DIMENSÃO.</h2></Reveal>
-        <div className="ns-services-grid">
-          <div className="ns-service-list">
-            {capabilities.map((item, index) => {
-              const Icon = item.icon;
-              return <div className={`ns-service ${active === index ? "ns-service-active" : ""}`} key={item.number}>
-                <button type="button" aria-expanded={active === index} onClick={() => setActive(index)}>
-                  <span className="ns-service-num">{item.number}</span><span className="ns-service-title">{item.title}</span><Icon size={25} strokeWidth={1.4} aria-hidden="true" /><ArrowUpRight size={21} className="ns-service-arrow" aria-hidden="true" />
-                </button>
-              </div>;
-            })}
-          </div>
-          <div className="ns-service-stage"><span className="ns-stage-label">{capabilities[active].label} / {capabilities[active].number}</span><Suspense fallback={null}><KineticWorld variant={capabilities[active].visual} paused={Boolean(reduced) || paused} /></Suspense><div className="ns-stage-footer"><p>{capabilities[active].body}</p><ArrowLink href={whatsappUrl(capabilities[active].contact)}>Conversar sobre isso</ArrowLink></div></div>
-        </div>
-      </div>
-    </section>
-  );
+  const current = services[active];
+  return <section id="servicos" className="ns-services"><div className="ns-section-title ns-wrap"><p className="ns-eyebrow">02 / O que posso criar</p><h2>O próximo movimento.</h2></div><div className="ns-service-composition"><Stage chapter="systems" service={current.key} /><div className="ns-service-panel"><div className="ns-service-options" role="group" aria-label="Escolha um serviço">{services.map((service, index) => <button type="button" key={service.key} aria-label={service.title} aria-pressed={index === active} onClick={() => setActive(index)}><span>0{index + 1}</span>{service.title}<ArrowUpRight size={19} aria-hidden="true" /></button>)}</div><div className="ns-service-description" aria-live="polite"><p>{current.copy}</p><Link href={whatsappUrl(current.inquiry)}>Conversar sobre {current.title === 'IA' ? 'IA' : current.title.toLowerCase()}</Link></div></div><span className="ns-service-caption">Sistemas que se conectam. Possibilidades que se abrem.</span></div></section>;
 }
-
-function EducationVisual() {
-  return <div className="ns-education-ui" role="img" aria-label="Representação visual do Sistema Educacional com quiz, forca, caça-palavras e tutor de IA; o projeto original é uma aplicação desktop em Python.">
-    <div className="ns-education-bar"><span>EDUCA<span>+</span></span><span>APRENDER PODE SER DIFERENTE</span><i /></div>
-    <div className="ns-education-body"><span>SEU ESPAÇO DE DESCOBERTA</span><h4>Aprenda<br />jogando<span>.</span></h4><div className="ns-game-grid"><div><span>01</span><b>QUIZ</b><ArrowUpRight size={17} /></div><div><span>02</span><b>FORCA</b><ArrowUpRight size={17} /></div><div><span>03</span><b>CAÇA-PALAVRAS</b><ArrowUpRight size={17} /></div></div><div className="ns-tutor"><Sparkles size={18} /><span>UM TUTOR DE IA PARA CADA DESCOBERTA</span><span>↗</span></div></div>
-  </div>;
-}
-
-function Projects() {
-  const sandbox = projects[0];
-  const education = projects[1];
-  return <section id="projetos" className="ns-projects">
-    <div className="ns-wrap"><Reveal className="ns-project-intro"><p className="ns-section-label">03 / TRABALHO SELECIONADO</p><h2>VEJA O QUE<br /><span>GANHOU VIDA.</span></h2><p>Dois projetos. Duas experiências.</p></Reveal></div>
-    <article className="ns-project ns-project-sandbox" id="sobre-sandbox"><div className="ns-wrap ns-project-frame"><Reveal className="ns-project-info"><div className="ns-project-top"><span>01 / PROJETO REAL</span><span>SIMULAÇÃO + IA</span></div><div className="ns-project-title-row"><div><h3>SANDBOX<span>®</span></h3><p className="ns-project-lead">ESCOLHAS QUE MUDAM TUDO.</p></div><ArrowLink href={whatsappUrl("um projeto inspirado no SANDBOX")}>Quero criar algo assim</ArrowLink></div></Reveal><Reveal className="ns-project-showcase"><Tilt className="ns-sandbox-screen"><div className="ns-screen-bar"><span /><span /><span /><small>PROJETO REAL / SANDBOX</small></div><img src="/images/sandbox.png" alt="Captura real do SANDBOX: bairro ilustrado, saldo e controles da simulação financeira." width="1280" height="720" loading="lazy" /></Tilt><div className="ns-floating-stamp"><span>PROJETO<br />REAL</span><ExternalLink size={21} /></div><p className="ns-image-note">CAPTURA REAL DO PROJETO · INTERFACE INTERATIVA</p></Reveal><details className="ns-project-details"><summary>Conheça o projeto <ArrowDown size={17} /></summary><div><p>{sandbox.description}</p><div><span>O DESAFIO</span><p>{sandbox.problem}</p></div><div><span>A SOLUÇÃO</span><p>{sandbox.solution}</p></div><div className="ns-project-tags">{sandbox.technologies.map(item => <span key={item}>{item}</span>)}</div></div></details></div></article>
-    <article className="ns-project ns-project-education" id="sobre-educacional"><div className="ns-wrap ns-project-frame"><Reveal className="ns-project-info"><div className="ns-project-top"><span>02 / PROJETO REAL</span><span>EDUCAÇÃO + IA</span></div><div className="ns-project-title-row"><div><h3>APRENDER<span>+</span></h3><p className="ns-project-lead">APRENDER VIROU JOGO.</p></div><ArrowLink href={whatsappUrl("um projeto inspirado no Sistema Educacional")}>Vamos fazer o seu projeto</ArrowLink></div></Reveal><Reveal className="ns-project-showcase"><Tilt className="ns-education-screen"><EducationVisual /></Tilt><p className="ns-image-note">REPRESENTAÇÃO VISUAL · APLICAÇÃO ORIGINAL EM TKINTER</p></Reveal><details className="ns-project-details"><summary>Conheça o projeto <ArrowDown size={17} /></summary><div><p>{education.description}</p><div><span>O DESAFIO</span><p>{education.problem}</p></div><div><span>A SOLUÇÃO</span><p>{education.solution}</p></div><div className="ns-project-tags">{education.technologies.map(item => <span key={item}>{item}</span>)}</div></div></details></div></article>
-  </section>;
-}
-
 function About() {
-  const reduced = useReducedMotion();
-  const { paused } = useContext(MotionContext);
-  return <section id="sobre" className="ns-about"><div className="ns-wrap ns-about-grid"><div className="ns-about-visual" aria-label="Monograma L tridimensional em movimento"><Suspense fallback={<span>L</span>}><KineticWorld variant="monolith" paused={Boolean(reduced) || paused} /></Suspense><i>IDEIA<br />→<br />IMPACTO</i></div><Reveal className="ns-about-copy"><p className="ns-section-label">04 / QUEM ESTÁ POR TRÁS</p><h2>OI, EU SOU<br /><em>LUCAS.</em></h2><p>Crio sites, automações e experiências com IA. Você fala direto comigo.</p><div className="ns-about-facts"><span><Check size={17} /> CONVERSA DIRETA</span><span><Check size={17} /> SOLUÇÃO SOB MEDIDA</span><span><Check size={17} /> DO CONCEITO À ENTREGA</span></div><a href="https://github.com/lucas-dev-studio" target="_blank" rel="noopener noreferrer" className="ns-inline-link">Meu GitHub <ArrowUpRight size={17} /></a></Reveal></div></section>;
+  return <section id="sobre" className="ns-about ns-wrap"><p className="ns-eyebrow">03 / Lucas — criação independente</p><Reveal className="ns-about-copy"><h2>Você fala com quem cria.</h2><div><p>Sites, automação e IA, da primeira conversa à entrega.</p><Link href={whatsappUrl()}>Conhecer sua ideia</Link></div></Reveal></section>;
 }
-
-function Process() {
-  return <section className="ns-process"><div className="ns-wrap"><Reveal className="ns-process-header"><p className="ns-section-label">05 / COMO ACONTECE</p><h2>DA IDEIA<br /><span>AO IMPACTO.</span></h2></Reveal><div className="ns-process-grid">{[
-    ["01", "Conversar."],
-    ["02", "Criar."],
-    ["03", "Lançar."],
-  ].map(([num, title], index) => <Reveal className="ns-process-step" delay={index * 0.12} key={num}><span className="ns-process-num">{num}</span><div className="ns-process-line" /><h3>{title}</h3><span className="ns-process-orb" aria-hidden="true" /></Reveal>)}</div></div></section>;
-}
-
 function Contact() {
-  const reduced = useReducedMotion();
-  const { paused } = useContext(MotionContext);
-  return <section id="contato" className="ns-contact"><div className="ns-wrap"><Reveal className="ns-contact-inner"><div className="ns-contact-top"><span><i className="ns-live-dot" /> AGENDA ABERTA PARA NOVAS IDEIAS</span><span>LUCAS / 2026</span></div><div className="ns-contact-world"><Suspense fallback={null}><KineticWorld variant="burst" paused={Boolean(reduced) || paused} /></Suspense></div><h2>AGORA É<br /><span>A SUA VEZ</span><span className="ns-contact-dot">.</span></h2><div className="ns-contact-bottom"><p>Uma conversa. O próximo projeto.</p><ArrowLink href={whatsappUrl()} light>Falar com Lucas no WhatsApp</ArrowLink></div></Reveal></div></section>;
+  return <section id="contato" className="ns-contact"><Stage chapter="contact" /><div className="ns-contact-copy"><p className="ns-eyebrow">04 / Próximo capítulo</p><h2>Vamos dar<br />forma à sua ideia<span className="ns-orange">.</span></h2><Link className="ns-link-primary" href={whatsappUrl()}>Falar com Lucas no WhatsApp</Link><span className="ns-contact-number">{whatsappLabel}</span></div><span className="ns-contact-caption">Uma conversa é o primeiro movimento.</span></section>;
 }
-
 export default function NewSite() {
   const [paused, setPaused] = useState(false);
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-  return <MotionContext.Provider value={{ paused, toggle: () => setPaused(value => !value) }}><div className={`ns-site ${paused ? "ns-motion-paused" : ""}`}><a className="ns-skip" href="#conteudo">Pular para o conteúdo</a><motion.div className="ns-progress" style={{ scaleX }} aria-hidden="true" /><Header /><main id="conteudo"><Hero /><Manifesto /><Services /><Projects /><About /><Process /><Contact /></main><footer className="ns-footer"><div className="ns-wrap"><a href="#inicio" className="ns-footer-logo">LUCAS<span>®</span></a><span>DESIGN. CÓDIGO. POSSIBILIDADE.</span><div><a href="https://github.com/lucas-dev-studio" target="_blank" rel="noopener noreferrer">GITHUB <ArrowUpRight size={14} /></a><a href={`mailto:contato.lucadevstudio@gmail.com`}>E-MAIL <ArrowUpRight size={14} /></a><a href={whatsappUrl()} target="_blank" rel="noopener noreferrer">{whatsappLabel} <ArrowUpRight size={14} /></a></div><span>© {new Date().getFullYear()} LUCAS DEV STUDIO</span></div></footer></div></MotionContext.Provider>;
+  const reduced = useReducedMotion();
+  const label = reduced ? 'Movimento reduzido' : paused ? 'Reproduzir animações' : 'Pausar animações';
+  return <MotionContext.Provider value={{ paused }}><div className={`studio-site ns-site ${paused || reduced ? 'ns-motion-paused' : ''}`}><a className="ns-skip" href="#conteudo">Pular para o conteúdo</a><Header /><main id="conteudo"><Hero /><Projects /><Services /><About /><Contact /></main><footer className="ns-footer"><a className="ns-logo" href="#inicio">lucas<span>®</span></a><span>© {new Date().getFullYear()} Lucas Dev Studio</span><div><a href="https://github.com/lucas-dev-studio" target="_blank" rel="noopener noreferrer">GitHub <ArrowUpRight size={14} aria-hidden="true" /></a><a href="mailto:contato.lucadevstudio@gmail.com">E-mail <ArrowUpRight size={14} aria-hidden="true" /></a></div><a href="#inicio">Voltar ao início ↑</a></footer><button className="ns-motion-toggle" type="button" disabled={reduced} aria-label={label} onClick={() => setPaused(!paused)}>{paused || reduced ? <Play size={13} aria-hidden="true" /> : <Pause size={13} aria-hidden="true" />}<span>{label}</span></button></div></MotionContext.Provider>;
 }

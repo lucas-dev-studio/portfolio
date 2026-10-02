@@ -29,7 +29,7 @@ Me conte sua ideia pelo [WhatsApp](https://wa.me/5511965117938?text=Ol%C3%A1%2C%
 
 ## Este site
 
-Feito com React, TypeScript, Tailwind CSS, Framer Motion e Three.js. O portfólio usa cenas 3D distintas no início, nos serviços, na apresentação pessoal e no contato. O movimento respeita a preferência por movimento reduzido; a animação principal também pode ser pausada. O deploy público usa Cloudflare Pages.
+Feito com React, TypeScript, Tailwind CSS, Framer Motion e Three.js. Cinco capítulos apresentam uma escultura de lâminas, o monitor do SANDBOX, um livro educacional, sistemas interativos e um móbile no contato. A câmera acompanha a rolagem, e os três serviços mudam a geometria da cena. O movimento respeita a preferência por movimento reduzido; a animação principal também pode ser pausada. O deploy público usa Cloudflare Pages.
 
 ```bash
 npm ci
@@ -50,7 +50,7 @@ Node.js 22.12+ é recomendado. Os testes de navegador usam Playwright e podem ex
 ## Organização
 
 - `src/components/new-site.tsx` e `new-site.css`: página comercial, interações e apresentação dos projetos.
-- `src/components/digital-sculpture.tsx`, `kinetic-world.tsx` e `sculpture-geometry.ts`: cenas 3D.
+- `src/components/studio-scene.tsx` e `studio-geometry.ts`: cenas, materiais, câmera e geometrias 3D.
 - `src/data/projects.ts`: conteúdo dos dois projetos.
 - `src/data/contact.ts`: links de contato.
 - `public/_headers`: cabeçalhos de segurança no Cloudflare Pages.
