@@ -104,3 +104,9 @@ No additional required visual changes remain in these supplied states. Existing 
 Parent reports the final built bundle `bFu8SD69` passed 15 UI/geometry/accessibility checks and 19 security checks after the final implementation changes. Those runtime results are attributed to the parent's automated verification; this reviewer independently inspected 15 rendered images and did not rerun the suites.
 
 All previously required visual findings are closed. No additional required changes remain within the supplied evidence and reported verification scope.
+
+## Published validation
+
+Cloudflare Pages reported successful production publication at https://luca-dev-studio.pages.dev/. The deployed code uses studio-scene-bFu8SD69.js.
+
+The final production run passed 19 UI/geometry/accessibility tests and 19 security tests. The multi-chapter render check was split into five independent checks and uses immediate scrolling instead of waiting for a continuously animated element to become stable. Each chapter rendered successfully; no application change was needed for that test timeout. Final published screenshot: docs/live-review.png.

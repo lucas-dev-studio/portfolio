@@ -29,18 +29,18 @@ test('Lucas presents two real projects and a direct quotation route', async ({ p
   expect(errors).toEqual([]);
 });
 
-test('all five spatial chapters render usable canvases', async ({ page }) => {
-  await page.goto('/');
-  for (const chapter of ['hero', 'sandbox', 'education', 'systems', 'contact']) {
+for (const chapter of ['hero', 'sandbox', 'education', 'systems', 'contact']) {
+  test('spatial chapter renders a usable canvas: ' + chapter, async ({ page }) => {
+    await page.goto('/');
     const world = page.locator(scene(chapter));
-    await world.scrollIntoViewIfNeeded();
+    await world.evaluate(el => el.scrollIntoView({block: 'center', behavior: 'instant'}));
     await expect(world).toHaveAttribute('data-ready', 'true', { timeout: 15000 });
     await expect(world.locator('canvas')).toHaveCount(1);
     const box = (await world.locator('canvas').boundingBox())!;
     expect(box.width).toBeGreaterThan(300);
     expect(box.height).toBeGreaterThan(300);
-  }
-});
+  });
+}
 
 test('service controls select distinct spatial assemblies and contextual contact', async ({ page }) => {
   await page.goto('/');
