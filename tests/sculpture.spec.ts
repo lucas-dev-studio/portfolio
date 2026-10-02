@@ -22,6 +22,8 @@ test("hero sculpture mounts and its pause control works",async({page})=>{
  await expect(page.locator(".ns-hero-object .sculpture-canvas")).toHaveAttribute("data-ready","true");
  await page.getByRole("button",{name:"Pausar animação 3D"}).click();
  await expect(page.getByRole("button",{name:"Reproduzir animação 3D"})).toBeVisible();
+ await expect(page.locator(".ns-world[data-paused=false]")).toHaveCount(0);
+ await expect(page.locator(".ns-site")).toHaveClass(/ns-motion-paused/);
  await page.emulateMedia({reducedMotion:"reduce"});
  await expect(page.getByRole("button",{name:"Animação desativada pela preferência de movimento reduzido"})).toBeDisabled();
 });

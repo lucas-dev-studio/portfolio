@@ -39,6 +39,7 @@ export default function KineticWorld({ variant, paused = false }: Props) {
 
     const root = new THREE.Group();
     scene.add(root);
+    root.rotation.set(0.12, 0.28, -0.06);
     const geometries: THREE.BufferGeometry[] = [];
     const materials: THREE.Material[] = [];
     const makeGeometry = <T extends THREE.BufferGeometry>(geometry: T) => { geometries.push(geometry); return geometry; };
@@ -100,7 +101,7 @@ export default function KineticWorld({ variant, paused = false }: Props) {
       rail.position.z = -0.4;
       for (let i = 0; i < 5; i++) {
         const packet = add(makeGeometry(new THREE.BoxGeometry(0.24, 0.24, 0.24)), ivory);
-        packet.userData.packet = i;
+        packet.position.set(i * 0.82 - 2.3, -1.35, 0.5);
         moving.push(packet);
       }
     }
@@ -130,7 +131,9 @@ export default function KineticWorld({ variant, paused = false }: Props) {
       face.position.set(-0.2, 0.17, 0);
       for (let i = 0; i < 14; i++) {
         const cube = add(makeGeometry(new THREE.BoxGeometry(0.13, 0.13, 0.13)), i % 2 ? cobalt : ivory);
-        cube.userData.orbit = i;
+        const angle = i * 2.39996;
+        cube.position.set(Math.cos(angle) * 2.15, Math.sin(angle * 1.2) * 1.8, Math.sin(angle) * 1.3);
+        cube.rotation.set(angle, angle * 0.5, angle * 0.7);
         moving.push(cube);
       }
     }
@@ -178,15 +181,17 @@ export default function KineticWorld({ variant, paused = false }: Props) {
       px = (event.clientX - box.left) / box.width - 0.5;
       py = (event.clientY - box.top) / box.height - 0.5;
     };
+    const leave = () => { px = 0; py = 0; };
     host.addEventListener("pointermove", move);
+    host.addEventListener("pointerleave", leave);
     const tick = (time: number) => {
       frame = requestAnimationFrame(tick);
       const delta = Math.min((time - last) / 1000, 0.04);
       last = time;
       if (!visible || document.hidden || pausedRef.current) return;
       elapsed += delta;
-      root.rotation.y += (px * 0.4 + Math.sin(elapsed * 0.25) * 0.23 - root.rotation.y) * 0.04;
-      root.rotation.x += (-py * 0.25 - root.rotation.x) * 0.04;
+      root.rotation.y += (0.28 + px * 0.4 + Math.sin(elapsed * 0.25) * 0.23 - root.rotation.y) * 0.04;
+      root.rotation.x += (0.12 - py * 0.25 - root.rotation.x) * 0.04;
       root.position.y = Math.sin(elapsed * 0.65) * 0.08;
       if (variant === "automation") {
         moving.forEach((part, i) => {
@@ -218,6 +223,7 @@ export default function KineticWorld({ variant, paused = false }: Props) {
       sizeObserver.disconnect();
       visibilityObserver.disconnect();
       host.removeEventListener("pointermove", move);
+      host.removeEventListener("pointerleave", leave);
       geometries.forEach(geometry => geometry.dispose());
       materials.forEach(material => material.dispose());
       renderer.dispose();
@@ -225,5 +231,5 @@ export default function KineticWorld({ variant, paused = false }: Props) {
     };
   }, [variant]);
 
-  return <div className={`ns-world ns-world-${variant}`} data-world={variant} ref={hostRef} aria-hidden="true" />;
+  return <div className={`ns-world ns-world-${variant}`} data-world={variant} data-paused={paused} ref={hostRef} aria-hidden="true"><span className="ns-world-fallback">{variant === "monolith" ? "L" : "✦"}</span></div>;
 }

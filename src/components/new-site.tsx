@@ -1,6 +1,5 @@
-import { lazy, Suspense, useRef, useState, type ReactNode } from "react";
+import { createContext, lazy, Suspense, useContext, useRef, useState, type ReactNode } from "react";
 import {
-  AnimatePresence,
   motion,
   useMotionValue,
   useScroll,
@@ -29,6 +28,7 @@ import "./new-site.css";
 
 const Sculpture = lazy(() => import("./digital-sculpture"));
 const KineticWorld = lazy(() => import("./kinetic-world"));
+const MotionContext = createContext({ paused: false, toggle: () => {} });
 
 const easing = [0.22, 1, 0.36, 1] as const;
 
@@ -141,7 +141,7 @@ function Header() {
 
 function Hero() {
   const reduced = useReducedMotion();
-  const [paused, setPaused] = useState(false);
+  const { paused, toggle } = useContext(MotionContext);
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 115]);
@@ -163,7 +163,7 @@ function Hero() {
             ))}
           </h1>
           <Reveal className="ns-hero-sub" delay={0.45}>
-            <p>Sites com presença. Automações que liberam tempo. Inteligência artificial aplicada ao que importa.</p>
+            <p>SITES · AUTOMAÇÃO · IA</p>
             <ArrowLink href={whatsappUrl()} light>Vamos construir o seu</ArrowLink>
           </Reveal>
         </div>
@@ -175,7 +175,7 @@ function Hero() {
           </Suspense>
           <span className="ns-object-caption"><Asterisk size={13} /> CRIATIVIDADE EM TODAS AS DIMENSÕES</span>
         </motion.div>
-        <button type="button" className="ns-motion-toggle" onClick={() => setPaused(!paused)} disabled={Boolean(reduced)} aria-label={reduced ? "Animação desativada pela preferência de movimento reduzido" : paused ? "Reproduzir animação 3D" : "Pausar animação 3D"}>{paused || reduced ? <Play size={13} /> : <Pause size={13} />} <span>{reduced ? "MOVIMENTO REDUZIDO" : paused ? "REPRODUZIR 3D" : "PAUSAR 3D"}</span></button>
+        <button type="button" className="ns-motion-toggle" onClick={toggle} disabled={Boolean(reduced)} aria-label={reduced ? "Animação desativada pela preferência de movimento reduzido" : paused ? "Reproduzir animação 3D" : "Pausar animação 3D"}>{paused || reduced ? <Play size={13} /> : <Pause size={13} />} <span>{reduced ? "MOVIMENTO REDUZIDO" : paused ? "REPRODUZIR MOTION" : "PAUSAR MOTION"}</span></button>
       </div>
       <div className="ns-hero-bottom ns-wrap">
         <span>01 — 05 / PORTFÓLIO DE LUCAS</span>
@@ -206,10 +206,11 @@ function Manifesto() {
 function Services() {
   const [active, setActive] = useState(0);
   const reduced = useReducedMotion();
+  const { paused } = useContext(MotionContext);
   return (
     <section id="servicos" className="ns-services">
       <div className="ns-wrap">
-        <Reveal className="ns-section-head"><p className="ns-section-label">02 / O QUE POSSO CRIAR</p><h2>O QUE VOCÊ IMAGINA,<br /><span>A GENTE COLOCA DE PÉ.</span></h2></Reveal>
+        <Reveal className="ns-section-head"><p className="ns-section-label">02 / O QUE POSSO CRIAR</p><h2>ESCOLHA UMA DIMENSÃO.</h2></Reveal>
         <div className="ns-services-grid">
           <div className="ns-service-list">
             {capabilities.map((item, index) => {
@@ -218,11 +219,10 @@ function Services() {
                 <button type="button" aria-expanded={active === index} onClick={() => setActive(index)}>
                   <span className="ns-service-num">{item.number}</span><span className="ns-service-title">{item.title}</span><Icon size={25} strokeWidth={1.4} aria-hidden="true" /><ArrowUpRight size={21} className="ns-service-arrow" aria-hidden="true" />
                 </button>
-                <AnimatePresence initial={false}>{active === index && <motion.div className="ns-service-content" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.35 }}><p>{item.body}</p><div>{item.tags.map(tag => <span key={tag}>{tag}</span>)}</div><a href={whatsappUrl(item.contact)} target="_blank" rel="noopener noreferrer">Conversar sobre isso <ArrowUpRight size={16} /></a></motion.div>}</AnimatePresence>
               </div>;
             })}
           </div>
-          <div className="ns-service-stage"><span className="ns-stage-label">{capabilities[active].label} / {capabilities[active].number}</span><Suspense fallback={null}><KineticWorld variant={capabilities[active].visual} paused={Boolean(reduced)} /></Suspense><span className="ns-stage-index">ARRASTE O OLHAR. IMAGINE O SEU.</span></div>
+          <div className="ns-service-stage"><span className="ns-stage-label">{capabilities[active].label} / {capabilities[active].number}</span><Suspense fallback={null}><KineticWorld variant={capabilities[active].visual} paused={Boolean(reduced) || paused} /></Suspense><div className="ns-stage-footer"><p>{capabilities[active].body}</p><ArrowLink href={whatsappUrl(capabilities[active].contact)}>Conversar sobre isso</ArrowLink></div></div>
         </div>
       </div>
     </section>
@@ -248,7 +248,8 @@ function Projects() {
 
 function About() {
   const reduced = useReducedMotion();
-  return <section id="sobre" className="ns-about"><div className="ns-wrap ns-about-grid"><div className="ns-about-visual" aria-label="Monograma L tridimensional em movimento"><Suspense fallback={<span>L</span>}><KineticWorld variant="monolith" paused={Boolean(reduced)} /></Suspense><i>IDEIA<br />→<br />IMPACTO</i></div><Reveal className="ns-about-copy"><p className="ns-section-label">04 / QUEM ESTÁ POR TRÁS</p><h2>OI, EU SOU<br /><em>LUCAS.</em></h2><p>Crio sites, automações e experiências com IA. Você fala direto comigo.</p><div className="ns-about-facts"><span><Check size={17} /> CONVERSA DIRETA</span><span><Check size={17} /> SOLUÇÃO SOB MEDIDA</span><span><Check size={17} /> DO CONCEITO À ENTREGA</span></div><a href="https://github.com/lucas-dev-studio" target="_blank" rel="noopener noreferrer" className="ns-inline-link">Meu GitHub <ArrowUpRight size={17} /></a></Reveal></div></section>;
+  const { paused } = useContext(MotionContext);
+  return <section id="sobre" className="ns-about"><div className="ns-wrap ns-about-grid"><div className="ns-about-visual" aria-label="Monograma L tridimensional em movimento"><Suspense fallback={<span>L</span>}><KineticWorld variant="monolith" paused={Boolean(reduced) || paused} /></Suspense><i>IDEIA<br />→<br />IMPACTO</i></div><Reveal className="ns-about-copy"><p className="ns-section-label">04 / QUEM ESTÁ POR TRÁS</p><h2>OI, EU SOU<br /><em>LUCAS.</em></h2><p>Crio sites, automações e experiências com IA. Você fala direto comigo.</p><div className="ns-about-facts"><span><Check size={17} /> CONVERSA DIRETA</span><span><Check size={17} /> SOLUÇÃO SOB MEDIDA</span><span><Check size={17} /> DO CONCEITO À ENTREGA</span></div><a href="https://github.com/lucas-dev-studio" target="_blank" rel="noopener noreferrer" className="ns-inline-link">Meu GitHub <ArrowUpRight size={17} /></a></Reveal></div></section>;
 }
 
 function Process() {
@@ -261,11 +262,13 @@ function Process() {
 
 function Contact() {
   const reduced = useReducedMotion();
-  return <section id="contato" className="ns-contact"><div className="ns-wrap"><Reveal className="ns-contact-inner"><div className="ns-contact-top"><span><i className="ns-live-dot" /> AGENDA ABERTA PARA NOVAS IDEIAS</span><span>LUCAS / 2026</span></div><div className="ns-contact-world"><Suspense fallback={null}><KineticWorld variant="burst" paused={Boolean(reduced)} /></Suspense></div><h2>AGORA É<br /><span>A SUA VEZ</span><span className="ns-contact-dot">.</span></h2><div className="ns-contact-bottom"><p>Uma conversa. O próximo projeto.</p><ArrowLink href={whatsappUrl()} light>Falar com Lucas no WhatsApp</ArrowLink></div></Reveal></div></section>;
+  const { paused } = useContext(MotionContext);
+  return <section id="contato" className="ns-contact"><div className="ns-wrap"><Reveal className="ns-contact-inner"><div className="ns-contact-top"><span><i className="ns-live-dot" /> AGENDA ABERTA PARA NOVAS IDEIAS</span><span>LUCAS / 2026</span></div><div className="ns-contact-world"><Suspense fallback={null}><KineticWorld variant="burst" paused={Boolean(reduced) || paused} /></Suspense></div><h2>AGORA É<br /><span>A SUA VEZ</span><span className="ns-contact-dot">.</span></h2><div className="ns-contact-bottom"><p>Uma conversa. O próximo projeto.</p><ArrowLink href={whatsappUrl()} light>Falar com Lucas no WhatsApp</ArrowLink></div></Reveal></div></section>;
 }
 
 export default function NewSite() {
+  const [paused, setPaused] = useState(false);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
-  return <div className="ns-site"><a className="ns-skip" href="#conteudo">Pular para o conteúdo</a><motion.div className="ns-progress" style={{ scaleX }} aria-hidden="true" /><Header /><main id="conteudo"><Hero /><Manifesto /><Services /><Projects /><About /><Process /><Contact /></main><footer className="ns-footer"><div className="ns-wrap"><a href="#inicio" className="ns-footer-logo">LUCAS<span>®</span></a><span>DESIGN. CÓDIGO. POSSIBILIDADE.</span><div><a href="https://github.com/lucas-dev-studio" target="_blank" rel="noopener noreferrer">GITHUB <ArrowUpRight size={14} /></a><a href={`mailto:contato.lucadevstudio@gmail.com`}>E-MAIL <ArrowUpRight size={14} /></a><a href={whatsappUrl()} target="_blank" rel="noopener noreferrer">{whatsappLabel} <ArrowUpRight size={14} /></a></div><span>© {new Date().getFullYear()} LUCAS DEV STUDIO</span></div></footer></div>;
+  return <MotionContext.Provider value={{ paused, toggle: () => setPaused(value => !value) }}><div className={`ns-site ${paused ? "ns-motion-paused" : ""}`}><a className="ns-skip" href="#conteudo">Pular para o conteúdo</a><motion.div className="ns-progress" style={{ scaleX }} aria-hidden="true" /><Header /><main id="conteudo"><Hero /><Manifesto /><Services /><Projects /><About /><Process /><Contact /></main><footer className="ns-footer"><div className="ns-wrap"><a href="#inicio" className="ns-footer-logo">LUCAS<span>®</span></a><span>DESIGN. CÓDIGO. POSSIBILIDADE.</span><div><a href="https://github.com/lucas-dev-studio" target="_blank" rel="noopener noreferrer">GITHUB <ArrowUpRight size={14} /></a><a href={`mailto:contato.lucadevstudio@gmail.com`}>E-MAIL <ArrowUpRight size={14} /></a><a href={whatsappUrl()} target="_blank" rel="noopener noreferrer">{whatsappLabel} <ArrowUpRight size={14} /></a></div><span>© {new Date().getFullYear()} LUCAS DEV STUDIO</span></div></footer></div></MotionContext.Provider>;
 }

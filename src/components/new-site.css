@@ -310,3 +310,72 @@
 @media (prefers-reduced-motion: reduce) {
   .ns-manifesto-kinetic span, .ns-process-orb { animation: none; }
 }
+/* Scenes lead; copy acts as a compact caption. */
+.ns-hero { min-height: 900px; height: 100svh; }
+.ns-hero-main { min-height: 660px; align-items: end; }
+.ns-hero-copy { width: auto; padding: 0 0 65px; }
+.ns-hero h1 { font-size: clamp(64px, 6vw, 96px); max-width: 480px; }
+.ns-hero-sub { flex-direction: column; align-items: start; gap: 14px; margin-top: 20px; }
+.ns-hero-sub p { font-size: 11px; letter-spacing: .16em; }
+.ns-hero-object { width: min(82vw, 1160px); height: min(82vw, 1160px); top: -22%; right: -13%; }
+.ns-object-caption { bottom: 20%; }
+.ns-services-grid { grid-template-columns: 1fr; gap: 0; position: relative; }
+.ns-service-stage { grid-row: 1; min-height: 760px; }
+.ns-service-stage .ns-world { inset: 15px 0 100px; }
+.ns-service-list { display: flex; gap: 10px; margin-top: 16px; }
+.ns-service { flex: 1; border: 1px solid #aeb3ba; border-radius: 3px; }
+.ns-service:last-child { border: 1px solid #aeb3ba; }
+.ns-service > button { padding: 20px; min-height: 80px; gap: 12px; align-items: center; }
+.ns-service-title { font-size: clamp(16px, 1.7vw, 25px); }
+.ns-service-active { background: #0a0b10; color: #f4f3ee; }
+.ns-service-active .ns-service-num { color: #c0c4cc; }
+.ns-stage-footer { position: absolute; z-index: 5; bottom: 25px; left: 28px; right: 28px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.ns-stage-footer p { font-size: 15px; }
+.ns-section-head h2 { font-size: clamp(32px, 4vw, 64px); }
+.ns-about-grid { position: relative; display: block; }
+.ns-about-visual { width: 100%; max-width: none; height: 760px; aspect-ratio: auto; }
+.ns-about-visual .ns-world { inset: 0 0 10% 20%; }
+.ns-about-copy { position: absolute; z-index: 5; bottom: 45px; left: 35px; width: 330px; }
+.ns-about-copy h2 { font-size: 60px; margin: 20px 0; }
+.ns-about-copy > p:not(.ns-section-label) { font-size: 14px; max-width: 290px; }
+.ns-about-facts { gap: 5px; margin: 15px 0; }
+.ns-about-facts span { background: #f0efe9; }
+.ns-about-visual i { top: 30px; bottom: auto; }
+.ns-manifesto-content { align-self: end; padding-bottom: 30px; }
+.ns-manifesto h2 { font-size: clamp(32px, 4vw, 60px); }
+.ns-manifesto-kinetic { width: 62vw; top: -5%; right: -6%; }
+.ns-contact-world { width: min(90vw, 1100px); right: -8%; top: -23%; }
+.ns-contact h2 { font-size: clamp(60px, 6vw, 96px); padding-top: 300px; margin-bottom: 45px; }
+.ns-motion-paused * { animation-play-state: paused !important; }
+.ns-world-fallback { display: none; }
+.ns-world[data-fallback=true] .ns-world-fallback { display: grid; place-items: center; height: 100%; font: 700 250px/1 'Space Grotesk', sans-serif; color: #5368f3; text-shadow: 16px 20px #adff53; }
+@media (max-width: 800px) {
+  .ns-hero { height: auto; min-height: 1000px; }
+  .ns-hero-main { min-height: 800px; display: flex; align-items: end; }
+  .ns-hero-copy { padding: 0 0 65px; }
+  .ns-hero h1 { font-size: 66px; }
+  .ns-hero-object { width: 110vw; height: 110vw; top: -3%; right: -26%; opacity: 1; }
+  .ns-service-stage { min-height: 620px; }
+  .ns-service-list { flex-direction: column; gap: 8px; }
+  .ns-service > button { min-height: 64px; padding: 16px; }
+  .ns-service-title { font-size: 20px; }
+  .ns-stage-footer { flex-direction: column; align-items: start; gap: 10px; bottom: 20px; left: 20px; }
+  .ns-stage-footer p { margin: 0; }
+  .ns-service-stage .ns-world { inset: 0 0 120px; }
+  .ns-about-visual { height: 850px; }
+  .ns-about-visual .ns-world { inset: 0 0 230px; }
+  .ns-about-copy { bottom: 25px; left: 20px; right: 20px; width: auto; }
+  .ns-about-copy h2 { font-size: 44px; }
+  .ns-manifesto-kinetic { width: 95vw; right: -25%; top: -2%; opacity: 1; }
+  .ns-manifesto-grid { min-height: 690px; padding-bottom: 25px; }
+  .ns-contact-world { width: 115vw; right: -20%; top: -8%; opacity: 1; }
+  .ns-contact h2 { padding-top: 0; margin: 400px 0 40px; font-size: 58px; }
+}
+@media (max-width: 550px) {
+  .ns-hero-object { top: 0; width: 132vw; height: 132vw; right: -30%; }
+  .ns-hero h1 { font-size: 60px; }
+  .ns-service-stage { min-height: 550px; }
+  .ns-manifesto-kinetic { top: 0; right: -10%; width: 110vw; }
+  .ns-manifesto h2 { font-size: 36px; }
+  .ns-about-visual { height: 800px; }
+}
